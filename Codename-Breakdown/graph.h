@@ -2,40 +2,43 @@
 #include <iostream>
 using namespace std;
 
-typedef struct graph Graph;
-
 //val -> value, dest-> destination, src-> source
-struct Node {
-	string station;
-	Node* next;
-};
+//struct Node {
+//	string station;
+//	int weight;
+//	Node* next;
+//};
+//
+//struct Edge {
+//	string src, dest;
+//	int srcc;
+//};
+//
+//struct adjList {
+//	Node* head;
+//};
 
-struct Edge {
-	string src, dest;
-};
 
-struct adjList {
-	Node* head;
-};
 
-class graph
+class Graph
 {
 private:
-	Node* getAdjListNode(string dest, Node* head) {
-		Node* newNode = new Node;
-		newNode->station = dest;
+	struct AdjListNode {
+		string station;
+		int data;
+		AdjListNode* next;
+	};
 
-		newNode->next = head;
+	struct AdjList {
+		AdjListNode* head;
+	};
 
-		return newNode;
-	}
-
-	int numOfNodes;
-	
+	int noOfVectors;
+	AdjList *array;
 
 public:
-	Node**head;
-	graph(Edge edges[], int noOfEdges, int noOfVertex); //constructor
-	~graph(); //deconstructor
+	Graph(); //constructor
+	~Graph(); //deconstructor
+	Graph* newGraph(int noOfVectors);
+	void addEdge(Graph g, int src, int dest);
 };
-
