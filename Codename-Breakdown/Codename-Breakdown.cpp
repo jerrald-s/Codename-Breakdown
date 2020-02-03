@@ -2,11 +2,66 @@
 //
 
 #include "pch.h"
+#include "List.h"
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+List getInterchange() {
+	ifstream myFile;
+	List interchangeList;
+	string stations;
+	myFile.open("Interchanges.csv");
+	if (myFile.is_open()) {
+		while (myFile >> stations) {
+			interchangeList.add(stations);
+		}
+	}
+	interchangeList.print();
+	return interchangeList;
+}
+
+void readStation() {
+	ifstream myFile;
+	List stationList;
+	string stations;
+	string codeandnumber;
+	string code;
+	string number;
+	string name;
+	myFile.open("Stations.csv");
+	if (myFile.is_open()) {
+		while (getline(myFile, stations)) {
+			code = "";
+			number = "";
+			stringstream ss(stations);
+			getline(ss, codeandnumber, ',');
+			getline(ss, name, ',');
+			for (int i = 0; i < codeandnumber.length(); i++) {
+				if (isdigit(codeandnumber[i]))
+					number.push_back(codeandnumber[i]);
+				else if ((codeandnumber[i] >= 'A' && codeandnumber[i] <= 'Z') ||
+					(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
+					code.push_back(codeandnumber[i]);
+				}
+			cout << code + "," + number + "," + name << endl;
+			stationList.add(code + "," + number + "," + name);
+		}
+	}
+}
+
+void getWeight() {
+
+}
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	List listInterchange;
+	List stationList;
+	listInterchange = getInterchange();
+	//stationList = readStation();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
