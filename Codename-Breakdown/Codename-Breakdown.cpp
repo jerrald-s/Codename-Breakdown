@@ -23,7 +23,7 @@ List getInterchange() {
 	return interchangeList;
 }
 
-void readStation() {
+list readStation() {
 	ifstream myFile;
 	List stationList;
 	string stations;
@@ -56,12 +56,51 @@ void getWeight() {
 
 }
 
+List getFare() {
+	ifstream myFile;
+	List fareList;
+	string fare;
+	myFile.open("Fares.csv");
+	if (myFile.is_open()) {
+		while (myFile >> fare) {
+			fareList.add(fare);
+		}
+	}
+	return fareList;
+}
+
+void menu() {
+	bool run = true;
+	while (run) {
+		cout << "---------------- Main Menu ------------------- \n [1] Display all stations in a given line \n [2] Display station information \n [3] Add and save new station on a given line \n [4] Display route information \n [0] Exit \n---------------------------------------------- \n Enter your option : ";
+		int x;
+		cin >> x;
+		if (x == 1) {
+
+		}
+		if (x == 2) {
+
+		}
+		if (x == 3) {
+
+		}
+		if (x == 4) {
+
+		}
+		if (x == 0) {
+			run = false;
+		}
+	}
+}
+
 int main()
 {
 	List listInterchange;
 	List stationList;
-	listInterchange = getInterchange();
-	//stationList = readStation();
+	/*listInterchange = getInterchange();
+	stationList = readStation();*/
+	menu();
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
