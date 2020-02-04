@@ -1,13 +1,13 @@
-// Codename-Breakdown.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "pch.h"
-#include "List.h"
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <sstream>
 using namespace std;
+#include "AdjacencyList.h"
+#include "List.h"
+
 
 List getInterchange() {
 	ifstream myFile;
@@ -23,7 +23,7 @@ List getInterchange() {
 	return interchangeList;
 }
 
-list readStation() {
+List readStation() {
 	ifstream myFile;
 	List stationList;
 	string stations;
@@ -45,11 +45,12 @@ list readStation() {
 				else if ((codeandnumber[i] >= 'A' && codeandnumber[i] <= 'Z') ||
 					(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
 					code.push_back(codeandnumber[i]);
-				}
+			}
 			cout << code + "," + number + "," + name << endl;
 			stationList.add(code + "," + number + "," + name);
 		}
 	}
+	return stationList;
 }
 
 void getWeight() {
@@ -93,23 +94,60 @@ void menu() {
 	}
 }
 
-int main()
+void setup(List stationList, List interchangeList)
 {
-	List listInterchange;
-	List stationList;
-	/*listInterchange = getInterchange();
-	stationList = readStation();*/
-	menu();
+	AdjacencyList metro;
+	for (int i = 0; i < stationList.getLength(); i++)
+	{
+		List tokens;
+		stringstream ss(stationList.get(i));
+		string intermediate;
+		bool checkInterchangeExist = false;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		string stationCode = tokens.get(0) + tokens.get(1);
+		for (int j = 0; j < interchangeList.getLength(); j++)
+		{
+			if (interchangeList.get(j).find(stationCode) != std::string::npos) {
+				List tokens2;
+				stringstream ss2(interchangeList.get(j));
+				string intermediate2;
+				while (getline(ss2, intermediate2, ','))
+				{
+					tokens2.add(intermediate2);
+				}
 
+				for (int l = 0; l < tokens2.getLength(); l++)
+				{
+					if (stationCode != tokens2.get(l))
+					{
+						int index = metro.getIndex(tokens2.get(l));
+						if (index != -1)
+						{
+							metro.get(index);
+							metro.addIntStation(tokens.get(0), tokens.get(1), index);
+							checkInterchangeExist = true;
+							cout << stationCode << " added" << endl;
+							metro.get(index);
+						}
+					}
+				}
+			}
+		}
+		if (!checkInterchangeExist)
+		{
+			metro.addStation(tokens.get(0), tokens.get(1), tokens.get(2));
+			cout << tokens.get(0) + tokens.get(1) << " added" << endl;
+		}
+	}
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+int main()
+{
+	List interchangeList = getInterchange();
+	List stationList = readStation();
+	setup(stationList, interchangeList);
+	menu();
+}

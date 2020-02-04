@@ -10,7 +10,7 @@ List::List() { size = 0; }
 // add an item to the back of the list (append)
 bool List::add(string s)
 {
-	bool success = size < MAX_SIZE;
+	bool success = size < LIST_MAX_SIZE;
 	if (success)
 	{
 		items[size] = s;    // add to the end of the list
@@ -55,5 +55,19 @@ string List::get(string n)
 		}
 	}
 	return s;
+}
+
+string List::get(int index)
+{
+	bool success = (index >= 0) && (index < size);
+	if (success)
+		return items[index];
+	else
+		return "";
+}
+
+int List::getLength()
+{
+	return size;
 }
 

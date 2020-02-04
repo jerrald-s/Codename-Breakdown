@@ -151,11 +151,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdjacencyList.h" />
+    <ClInclude Include="BinaryNode.h" />
+    <ClInclude Include="BST.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdjacencyList.cpp" />
+    <ClCompile Include="BST.cpp" />
     <ClCompile Include="Codename-Breakdown.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="List.cpp" />

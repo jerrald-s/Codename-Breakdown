@@ -4,12 +4,12 @@
 #include <string>
 using namespace std;
 
-const int MAX_SIZE = 100;
+const int LIST_MAX_SIZE = 300;
 
 class List
 {
 private:
-	string items[MAX_SIZE];
+	string items[LIST_MAX_SIZE];
 	int size;
 
 public:
@@ -21,6 +21,8 @@ public:
 	bool add(string);
 	bool remove(int);
 	string get(string);
+	string get(int);
+	int getLength();
 };
 
 
