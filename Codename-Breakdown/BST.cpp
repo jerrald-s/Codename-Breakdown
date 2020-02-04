@@ -71,7 +71,7 @@ void BST::inorder(BinaryNode* t)
 	{
 		inorder(t->left);
 
-		cout << t->line << t->item << t->name << endl;
+		cout << t->line << t->item << " " << t->name << endl;
 		inorder(t->right);
 
 	}

@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-const int LIST_MAX_SIZE = 300;
+const int LIST_MAX_SIZE = 1000;
 
 class List
 {

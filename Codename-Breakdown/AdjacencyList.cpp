@@ -34,7 +34,6 @@ bool AdjacencyList::addIntStation(LineType line, CodeType stationCode, int index
 	currentNode = stations[index];
 	currentNode->line = currentNode->line + "," + line;
 	currentNode->stationCode = currentNode->stationCode + "," + stationCode;
-	size++;
 	return true;
 }
 
@@ -137,37 +136,36 @@ int AdjacencyList::getIndex(LineType line, CodeType stationCode)
 
 int AdjacencyList::displayLine(LineType line)
 {
-	//BST displayTree;
-	//for (int i = 0; i < size; i++)
-	//{
-	//	// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
-	//	List tokens;
-	//	stringstream ss(stations[i]->line);
-	//	string intermediate;
-	//	while (getline(ss, intermediate, ','))
-	//	{
-	//		tokens.add(intermediate);
-	//	}
-	//	List tokens2;
-	//	stringstream ss2(stations[i]->stationCode);
-	//	string intermediate2;
-	//	while (getline(ss2, intermediate2, ','))
-	//	{
-	//		tokens2.add(intermediate2);
-	//	}
-
-	//	// Check whether station exist
-	//	for (int j = 0; j < tokens.getLength(); j++)
-	//	{
-	//		if (tokens.get(j) == line)
-	//		{
-	//			StaCodeType stationCode = stoi(tokens2.get(j));
-	//			displayTree.insert(stationCode, tokens.get(j), stations[i]->name);
-	//		}
-	//	}
-	//}
-	//displayTree.inorder();
-	//return displayTree.countNodes();
+	BST displayTree;
+	for (int i = 0; i < size; i++)
+	{
+		// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+		List tokens;
+		stringstream ss(stations[i]->line);
+		string intermediate;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		List tokens2;
+		stringstream ss2(stations[i]->stationCode);
+		string intermediate2;
+		while (getline(ss2, intermediate2, ','))
+		{
+			tokens2.add(intermediate2);
+		}
+		// Check whether station exist
+		for (int j = 0; j < tokens.getLength(); j++)
+		{
+			if (tokens.get(j) == line)
+			{
+				//cout << stations[i]->name << endl;
+				StaCodeType stationCode = stoi(tokens2.get(j));
+				displayTree.insert(stationCode, tokens.get(j), stations[i]->name);
+			}
+		}
+	}
+	displayTree.inorder();
 	return 1;
 }
 

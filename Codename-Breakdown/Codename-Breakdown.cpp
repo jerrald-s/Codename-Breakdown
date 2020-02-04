@@ -19,7 +19,7 @@ List getInterchange() {
 			interchangeList.add(stations);
 		}
 	}
-	interchangeList.print();
+	//interchangeList.print();
 	return interchangeList;
 }
 
@@ -46,7 +46,7 @@ List readStation() {
 					(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
 					code.push_back(codeandnumber[i]);
 			}
-			cout << code + "," + number + "," + name << endl;
+			//cout << code + "," + number + "," + name << endl;
 			stationList.add(code + "," + number + "," + name);
 		}
 	}
@@ -70,14 +70,17 @@ List getFare() {
 	return fareList;
 }
 
-void menu() {
+void menu(AdjacencyList metro) {
 	bool run = true;
 	while (run) {
 		cout << "---------------- Main Menu ------------------- \n [1] Display all stations in a given line \n [2] Display station information \n [3] Add and save new station on a given line \n [4] Display route information \n [0] Exit \n---------------------------------------------- \n Enter your option : ";
 		int x;
 		cin >> x;
 		if (x == 1) {
-
+			string line;
+			cout << "Which line do you want to see: ";
+			cin >> line;
+			metro.displayLine(line);
 		}
 		if (x == 2) {
 
@@ -94,9 +97,8 @@ void menu() {
 	}
 }
 
-void setup(List stationList, List interchangeList)
+AdjacencyList setup(List stationList, List interchangeList, AdjacencyList metro)
 {
-	AdjacencyList metro;
 	for (int i = 0; i < stationList.getLength(); i++)
 	{
 		List tokens;
@@ -110,15 +112,24 @@ void setup(List stationList, List interchangeList)
 		string stationCode = tokens.get(0) + tokens.get(1);
 		for (int j = 0; j < interchangeList.getLength(); j++)
 		{
-			if (interchangeList.get(j).find(stationCode) != std::string::npos) {
-				List tokens2;
-				stringstream ss2(interchangeList.get(j));
-				string intermediate2;
-				while (getline(ss2, intermediate2, ','))
-				{
-					tokens2.add(intermediate2);
-				}
+			List tokens2;
+			stringstream ss2(interchangeList.get(j));
+			string intermediate2;
+			while (getline(ss2, intermediate2, ','))
+			{
+				tokens2.add(intermediate2);
+			}
 
+			bool isInterchange = false;
+			for (int k = 0; k < tokens2.getLength(); k++)
+			{
+				if (stationCode == tokens2.get(k)) {
+					isInterchange = true;
+					break;
+				}
+			}
+			if (isInterchange)
+			{
 				for (int l = 0; l < tokens2.getLength(); l++)
 				{
 					if (stationCode != tokens2.get(l))
@@ -126,28 +137,32 @@ void setup(List stationList, List interchangeList)
 						int index = metro.getIndex(tokens2.get(l));
 						if (index != -1)
 						{
-							metro.get(index);
 							metro.addIntStation(tokens.get(0), tokens.get(1), index);
 							checkInterchangeExist = true;
-							cout << stationCode << " added" << endl;
-							metro.get(index);
+							//cout << "Interchange " << stationCode << " added" << endl;
+							cout << "Setting up..." << endl;
+							break;
 						}
 					}
 				}
+				if (checkInterchangeExist)
+					break;
 			}
 		}
 		if (!checkInterchangeExist)
 		{
 			metro.addStation(tokens.get(0), tokens.get(1), tokens.get(2));
-			cout << tokens.get(0) + tokens.get(1) << " added" << endl;
+			//cout << tokens.get(0) + tokens.get(1) << " added" << endl;
 		}
 	}
+	return metro;
 }
 
 int main()
 {
 	List interchangeList = getInterchange();
 	List stationList = readStation();
-	setup(stationList, interchangeList);
-	menu();
+	AdjacencyList metro;
+	metro = setup(stationList, interchangeList, metro);
+	menu(metro);
 }
