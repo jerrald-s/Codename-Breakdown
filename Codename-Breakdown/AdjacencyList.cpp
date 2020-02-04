@@ -160,8 +160,14 @@ int AdjacencyList::displayLine(LineType line)
 			if (tokens.get(j) == line)
 			{
 				//cout << stations[i]->name << endl;
-				StaCodeType stationCode = stoi(tokens2.get(j));
-				displayTree.insert(stationCode, tokens.get(j), stations[i]->name);
+				if (tokens.getLength() == tokens2.getLength()) {
+					StaCodeType stationCode = stoi(tokens2.get(j));
+					displayTree.insert(stoi(tokens2.get(j)), tokens.get(j), stations[i]->name);
+				}
+				else
+				{
+					displayTree.insert(NULL, tokens.get(j), stations[i]->name);
+				}
 			}
 		}
 	}

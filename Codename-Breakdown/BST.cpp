@@ -60,7 +60,7 @@ void BST::insert(BinaryNode* &t, StaCodeType item, LineType line, NameType name)
 void BST::inorder()
 {
 	if (isEmpty())
-		cout << "No item found" << endl;
+		cout << "No line found" << endl;
 	else
 		inorder(root);
 }
@@ -70,8 +70,10 @@ void BST::inorder(BinaryNode* t)
 	if (t != NULL)
 	{
 		inorder(t->left);
-
-		cout << t->line << t->item << " " << t->name << endl;
+		if (t->item != NULL)
+			cout << t->line << t->item << " " << t->name << endl;
+		else
+			cout << t->line << " " << t->name << endl;
 		inorder(t->right);
 
 	}
