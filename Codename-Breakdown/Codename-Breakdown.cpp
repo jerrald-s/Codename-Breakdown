@@ -9,6 +9,10 @@ using namespace std;
 #include "List.h"
 
 
+void setUpRoute(List stationList, List weightList) {
+
+}
+
 List getInterchange() {
 	ifstream myFile;
 	List interchangeList;
@@ -54,7 +58,44 @@ List readStation() {
 }
 
 void getWeight() {
+	List routes;
+	ifstream myFile;
+	List stationList;
+	List weightList;
+	string line;
+	string content;
+	string source;
+	string destination;
+	int weight;
+	int count = 0;
+	myFile.open("Routes.csv");
+	if (myFile.is_open()) {
+		while (getline(myFile, line)) {
+			stringstream ss(line);
+			while (getline(ss, content, ',')) {
+				if (count % 2 == 0) {
+					stationList.add(content);
+				}
+				else {
+					weightList.add(content);
+				}
+			
+			}
 
+			if (count % 2 != 0) {
+				//setUpRoute(stationList, weightList);
+				int stationListNo = stationList.getLength();
+				int weightListNo = weightList.getLength();
+				for (int a = 0; a < stationListNo; a++) {
+					stationList.remove(1);
+				}
+				for (int b = 0; b < weightListNo; b++) {
+					weightList.remove(1);
+				}
+			}
+			count++;
+		}
+	}
 }
 
 List getFare() {
@@ -160,9 +201,10 @@ AdjacencyList setup(List stationList, List interchangeList, AdjacencyList metro)
 
 int main()
 {
-	List interchangeList = getInterchange();
+	getWeight();
+	/*List interchangeList = getInterchange();
 	List stationList = readStation();
 	AdjacencyList metro;
 	metro = setup(stationList, interchangeList, metro);
-	menu(metro);
+	menu(metro);*/
 }
