@@ -35,14 +35,6 @@ void setUpRoute(List stationList, List weightList, AdjacencyList metro) {
 	}
 }
 
-LinkedList getAllLines(AdjacencyList metro) {
-	LinkedList lineList;
-	string line;
-	for (int i = 0; i < metro.getSize; i++) {
-
-	}
-}
-
 List getInterchange() {
 	ifstream myFile;
 	List interchangeList;
@@ -151,7 +143,7 @@ void menu(AdjacencyList metro) {
 			string line;
 			cout << "Which line do you want to see: ";
 			cin >> line;
-			metro.displayLine(line);
+			cout << metro.displayLine(line) << endl;
 		}
 		if (x == 2) {
 			string name;
@@ -255,5 +247,14 @@ int main()
 	AdjacencyList metro;
 	metro = setup(stationList, interchangeList, metro);
 	getWeight(metro);
+	LinkedList stationCodeList = metro.getAllLines();
+
+	//uncomment bottom section if u want to verify the stationcode linnked list
+	/*cout << metro.getSize() << endl; 
+	for (int i = 0; i < metro.getSize(); i++) {
+		metro.get(i);
+		cout << i << endl;
+	}*/
+
 	menu(metro);
 }

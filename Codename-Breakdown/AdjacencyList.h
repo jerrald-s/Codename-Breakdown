@@ -4,6 +4,7 @@
 using namespace std;
 #include "List.h"
 #include "BST.h"
+#include "LinkedList.h"
 
 const int MAX_SIZE = 1001;
 typedef string LineType;
@@ -64,5 +65,9 @@ public:
 	bool displayRouteAndPrice();
 
 	int getSize();
+
+	LinkedList getAllLines();
+
+	int displayNumberOfStation(LineType line);
 };
 

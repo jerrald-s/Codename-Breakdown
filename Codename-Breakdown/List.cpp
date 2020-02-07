@@ -49,7 +49,7 @@ string List::get(string n)
 	string s = "";
 	for (int i = 0; i < size; i++) {
 		if (n == items[i]) {
-			cout << items[i] << endl;   //get(i)
+			//cout << items[i] << endl;   //get(i)
 			s = items[i];
 			break;
 		}

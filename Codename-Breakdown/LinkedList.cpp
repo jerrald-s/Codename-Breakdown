@@ -108,13 +108,13 @@ void LinkedList::print() {
 	int i;
 	for (i = 0; i != size; i++) {
 		if (i != size - 1) {
-			cout << current->item << ',';
+			cout << current->item << ',' << current->startPosition << ',' << current->endPosition << endl;
 			current = current->next;
 		}
 		else {
-			cout << current->item;
+			cout << current->item << ',' << current->startPosition << ',' << current->endPosition << endl;
 			current = current->next;
 		}
 	}
-	cout << endl;
+	//cout << endl;
 }

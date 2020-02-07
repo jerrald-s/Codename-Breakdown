@@ -6,6 +6,7 @@
 #include "BST.h"
 #include <iostream>
 #include <fstream>
+#include "LinkedList.h"
 
 
 AdjacencyList::AdjacencyList()
@@ -138,6 +139,7 @@ int AdjacencyList::getIndex(LineType line, CodeType stationCode)
 
 int AdjacencyList::displayLine(LineType line)
 {
+	int numberOfLines = 0;
 	BST displayTree;
 	for (int i = 0; i < size; i++)
 	{
@@ -165,16 +167,18 @@ int AdjacencyList::displayLine(LineType line)
 				if (tokens.getLength() == tokens2.getLength()) {
 					StaCodeType stationCode = stoi(tokens2.get(j));
 					displayTree.insert(stoi(tokens2.get(j)), tokens.get(j), stations[i]->name);
+					numberOfLines++;
 				}
 				else
 				{
 					displayTree.insert(NULL, tokens.get(j), stations[i]->name);
+					numberOfLines++;
 				}
 			}
 		}
 	}
 	displayTree.inorder();
-	return 1;
+	return numberOfLines;
 }
 
 bool AdjacencyList::displayStationInformation(ItemType name)
@@ -222,9 +226,9 @@ bool AdjacencyList::displayRouteAndPrice()
 	return true;
 }
 
-bool AdjacencyList::addNewStation(ItemType name, LineType line, CodeType stationCode) {
-
-}
+//bool AdjacencyList::addNewStation(ItemType name, LineType line, CodeType stationCode) {
+//
+//}
 
 void AdjacencyList::get(int index)
 {
@@ -235,4 +239,95 @@ void AdjacencyList::get(int index)
 
 int AdjacencyList::getSize() {
 	return size;
+}
+
+LinkedList AdjacencyList::getAllLines() {
+	LinkedList lineList;
+	List codes;
+	string line;
+	string stationCode;
+	HeaderNode *currentNode;
+	HeaderNode *currentNode2;
+	for (int i = 0; i < size; i++) {
+		currentNode = stations[i];
+		stringstream ss(currentNode->line);
+		while (getline(ss, stationCode, ',')) {
+			if (codes.get(stationCode) == "") {
+				codes.add(stationCode);
+			}
+		}
+	}
+	for (int j = 0; j < codes.getLength(); j++) {
+		string currentStationCode = codes.get(j);
+		int numberOfStations = displayNumberOfStation(currentStationCode);
+		int counter = 0;
+		int source = size;
+		int final = -1;
+		for (int k = 0; k < size; k++) {
+			bool checker = false;
+			currentNode2 = stations[k];
+			stringstream ss(currentNode2->line);
+			while (getline(ss, stationCode, ',')) {
+				if (stationCode == currentStationCode) {
+					checker = true;
+					counter++;
+					if (source > k) {
+						source = k;
+					}
+					if (final < k) {
+						final = k;
+					}
+					break;
+				}
+				else {
+					continue;
+				}
+			}
+			if (counter == numberOfStations) {
+				lineList.add(currentStationCode, source, final);
+				break;
+			}
+		}
+	}
+	return lineList;
+}
+
+int AdjacencyList::displayNumberOfStation(LineType line)
+{
+	int numberOfLines = 0;
+	for (int i = 0; i < size; i++)
+	{
+		// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+		List tokens;
+		stringstream ss(stations[i]->line);
+		string intermediate;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		List tokens2;
+		stringstream ss2(stations[i]->stationCode);
+		string intermediate2;
+		while (getline(ss2, intermediate2, ','))
+		{
+			tokens2.add(intermediate2);
+		}
+		// Check whether station exist
+		for (int j = 0; j < tokens.getLength(); j++)
+		{
+			if (tokens.get(j) == line)
+			{
+				//cout << stations[i]->name << endl;
+				if (tokens.getLength() == tokens2.getLength()) {
+					StaCodeType stationCode = stoi(tokens2.get(j));
+					numberOfLines++;
+				}
+				else
+				{
+					numberOfLines++;
+				}
+			}
+		}
+	}
+	return numberOfLines;
 }
