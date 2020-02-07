@@ -9,8 +9,28 @@ using namespace std;
 #include "List.h"
 
 
-void setUpRoute(List stationList, List weightList) {
+void setUpRoute(List stationList, List weightList, AdjacencyList metro) {
+	// forward direction
+	for (int i = 0; i < weightList.getLength(); i++)
+	{
+		string currentStation = stationList.get(i);
+		int currentStationIndex = metro.getIndex(currentStation);
+		string nextStation = stationList.get(i + 1);
+		int nextStationIndex = metro.getIndex(nextStation);
+		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
+		cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
+	}
 
+	// other direction
+	for (int i = weightList.getLength() - 1; i > 0; i--)
+	{
+		string currentStation = stationList.get(i);
+		int currentStationIndex = metro.getIndex(currentStation);
+		string nextStation = stationList.get(i - 1);
+		int nextStationIndex = metro.getIndex(nextStation);
+		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
+		cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
+	}
 }
 
 List getInterchange() {
@@ -57,7 +77,7 @@ List readStation() {
 	return stationList;
 }
 
-void getWeight() {
+void getWeight(AdjacencyList metro) {
 	List routes;
 	ifstream myFile;
 	List stationList;
@@ -83,7 +103,7 @@ void getWeight() {
 			}
 
 			if (count % 2 != 0) {
-				//setUpRoute(stationList, weightList);
+				setUpRoute(stationList, weightList, metro);
 				int stationListNo = stationList.getLength();
 				int weightListNo = weightList.getLength();
 				for (int a = 0; a < stationListNo; a++) {
@@ -201,10 +221,10 @@ AdjacencyList setup(List stationList, List interchangeList, AdjacencyList metro)
 
 int main()
 {
-	getWeight();
-	/*List interchangeList = getInterchange();
+	List interchangeList = getInterchange();
 	List stationList = readStation();
 	AdjacencyList metro;
 	metro = setup(stationList, interchangeList, metro);
-	menu(metro);*/
+	getWeight(metro);
+	menu(metro);
 }
