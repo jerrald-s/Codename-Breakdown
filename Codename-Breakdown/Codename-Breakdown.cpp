@@ -144,7 +144,11 @@ void menu(AdjacencyList metro) {
 			metro.displayLine(line);
 		}
 		if (x == 2) {
-
+			string name;
+			cout << "Which station do you want to see: ";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			getline(cin, name);
+			metro.displayStationInformation(name);
 		}
 		if (x == 3) {
 
