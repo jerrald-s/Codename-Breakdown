@@ -46,7 +46,7 @@ bool List::remove(int index) {
 string List::get(string n)
 {
 	bool checker = false;
-	string s;
+	string s = "";
 	for (int i = 0; i < size; i++) {
 		if (n == items[i]) {
 			cout << items[i] << endl;   //get(i)

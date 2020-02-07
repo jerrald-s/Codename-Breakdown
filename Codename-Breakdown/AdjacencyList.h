@@ -59,6 +59,10 @@ public:
 
 	bool displayStationInformation(ItemType name);
 
+	bool addNewStation(ItemType name, LineType line, CodeType stationCode);
+
 	bool displayRouteAndPrice();
+
+	int getSize();
 };
 

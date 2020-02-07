@@ -4,9 +4,11 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include<cctype>
 using namespace std;
 #include "AdjacencyList.h"
 #include "List.h"
+#include "LinkedList.h"
 
 
 void setUpRoute(List stationList, List weightList, AdjacencyList metro) {
@@ -30,6 +32,14 @@ void setUpRoute(List stationList, List weightList, AdjacencyList metro) {
 		int nextStationIndex = metro.getIndex(nextStation);
 		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
 		cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
+	}
+}
+
+LinkedList getAllLines(AdjacencyList metro) {
+	LinkedList lineList;
+	string line;
+	for (int i = 0; i < metro.getSize; i++) {
+
 	}
 }
 
@@ -151,7 +161,22 @@ void menu(AdjacencyList metro) {
 			metro.displayStationInformation(name);
 		}
 		if (x == 3) {
-
+			string name;
+			string codeandnumber;
+			string line;
+			string stationCode;
+			cout << "Key in station name: ";
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			getline(cin, name);
+			cout << "Key in line code: ";
+			cin >> codeandnumber;
+			for (int i = 0; i < codeandnumber.length(); i++) {
+				if (isdigit(codeandnumber[i]))
+					stationCode.push_back(codeandnumber[i]);
+				else if ((codeandnumber[i] >= 'A' && codeandnumber[i] <= 'Z') ||
+					(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
+					line.push_back(codeandnumber[i]);
+			}
 		}
 		if (x == 4) {
 

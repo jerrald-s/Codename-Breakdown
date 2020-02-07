@@ -222,9 +222,17 @@ bool AdjacencyList::displayRouteAndPrice()
 	return true;
 }
 
+bool AdjacencyList::addNewStation(ItemType name, LineType line, CodeType stationCode) {
+
+}
+
 void AdjacencyList::get(int index)
 {
 	cout << stations[index]->name << endl;
 	cout << stations[index]->line << endl;
 	cout << stations[index]->stationCode << endl;
+}
+
+int AdjacencyList::getSize() {
+	return size;
 }
