@@ -4,6 +4,8 @@
 #include "List.h"
 #include <sstream>
 #include "BST.h"
+#include <iostream>
+#include <fstream>
 
 
 AdjacencyList::AdjacencyList()
@@ -177,7 +179,42 @@ int AdjacencyList::displayLine(LineType line)
 
 bool AdjacencyList::displayStationInformation(ItemType name)
 {
-	return true;
+	bool check = false;
+	int interchangeChecker = 0;
+	string station;
+	string code;
+	HeaderNode *currentNode;
+	for (int i = 0; i < size; i++) {
+		currentNode = stations[i];
+		if (name == currentNode->name) {
+			cout << "Station found!" << endl;
+			stringstream ss1(currentNode->line);
+			stringstream ss2(currentNode->stationCode);
+			cout << "Station code: " << endl;
+			while (getline(ss1, station, ',')) {
+				(getline(ss2, code, ','));
+				cout << station << code << endl;
+				interchangeChecker++;
+			}
+			check = true;
+		}
+		else {
+			continue;
+		}
+	}
+	if (check == false) {
+		cout << "Station entered couldn't be found..." << endl;
+		return check;
+	}
+	else {
+		if (interchangeChecker == 1) {
+			cout << "Station entered is not an interchange." << endl;
+		}
+		else {
+			cout << "Station entered is an interchange." << endl;
+		}
+		return check;
+	}
 }
 
 bool AdjacencyList::displayRouteAndPrice()

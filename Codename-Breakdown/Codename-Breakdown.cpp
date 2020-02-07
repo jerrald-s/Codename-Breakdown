@@ -79,7 +79,6 @@ void getWeight() {
 				else {
 					weightList.add(content);
 				}
-			
 			}
 
 			if (count % 2 != 0) {
@@ -124,7 +123,7 @@ void menu(AdjacencyList metro) {
 			metro.displayLine(line);
 		}
 		if (x == 2) {
-
+			cout << "Please enter the station name:";
 		}
 		if (x == 3) {
 
@@ -201,10 +200,10 @@ AdjacencyList setup(List stationList, List interchangeList, AdjacencyList metro)
 
 int main()
 {
-	getWeight();
-	/*List interchangeList = getInterchange();
+	List interchangeList = getInterchange();
 	List stationList = readStation();
 	AdjacencyList metro;
 	metro = setup(stationList, interchangeList, metro);
-	menu(metro);*/
+	//menu(metro);
+	metro.displayStationInformation("Tanah Merah");
 }
