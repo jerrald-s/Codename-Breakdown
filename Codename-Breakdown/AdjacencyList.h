@@ -1,9 +1,13 @@
 #pragma once
 #include<string>
 #include<iostream>
-using namespace std;
 #include "List.h"
 #include "BST.h"
+#include "DijkstraAlgorithm.h"
+#include "Queue.h"
+#include "LinkedList.h"
+using namespace std;
+
 
 const int MAX_SIZE = 1001;
 typedef string LineType;
@@ -28,6 +32,7 @@ private:
 		LineType line;
 		CodeType stationCode;
 		ItemType name;
+		int visited;
 		Node *next;
 	};
 
@@ -53,16 +58,24 @@ public:
 
 	int getIndex(LineType line, CodeType stationCode);
 
+	int getIndexFromName(string name);
+
 	void get(int index);
 
 	int displayLine(LineType line);
 
 	bool displayStationInformation(ItemType name);
 
-	bool addNewStation(ItemType name, LineType line, CodeType stationCode);
+	//bool addNewStation(ItemType name, LineType line, CodeType stationCode);
 
-	bool displayRouteAndPrice();
+	bool displayRouteAndPrice(int startIndex, int destIndex, AdjacencyList metro, List fare);
 
 	int getSize();
+
+	string retrieveFullStationCode(LineType line, CodeType stationCode);
+
+	LinkedList getAllLines();
+
+	int displayNumberOfStation(LineType line);
 };
 
