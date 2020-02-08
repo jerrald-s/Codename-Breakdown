@@ -56,6 +56,8 @@ public:
 
 	int getIndex(FullCodeType fullStationCode);
 
+	int getIndex(FullCodeType fullStationCode, LinkedList refTable);
+
 	int getIndex(LineType line, CodeType stationCode);
 
 	int getIndexFromName(string name);

@@ -99,6 +99,55 @@ int AdjacencyList::getIndex(FullCodeType fullStationCode)
 	return -1;
 }
 
+int AdjacencyList::getIndex(FullCodeType fullStationCode, LinkedList refTable)
+{
+	HeaderNode *currentNode;
+	string line;
+	for (int p = 0; p < fullStationCode.length(); p++)
+	{
+		if ((fullStationCode[p] >= 'A' && fullStationCode[p] <= 'Z') ||
+			(fullStationCode[p] >= 'a' && fullStationCode[p] <= 'z'))
+		{
+			line.push_back(fullStationCode[p]);
+		}
+	}
+
+	int startIndex = refTable.getStartPosition(line);
+	int endIndex = refTable.getEndPosition(line);
+
+	for (int i = startIndex; i < (endIndex + 1); i++)
+	{
+		currentNode = stations[i];
+
+		// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+		List tokens;
+		stringstream ss(currentNode->line);
+		string intermediate;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		List tokens2;
+		stringstream ss2(currentNode->stationCode);
+		string intermediate2;
+		while (getline(ss2, intermediate2, ','))
+		{
+			tokens2.add(intermediate2);
+		}
+
+		// Check whether station exist
+		for (int j = 0; j < tokens.getLength(); j++)
+		{
+			string stationCode = tokens.get(j) + tokens2.get(j);
+			if (stationCode == fullStationCode)
+			{
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
 // Getting of station index using Line+Code, not Station Name.
 int AdjacencyList::getIndex(LineType line, CodeType stationCode)
 {

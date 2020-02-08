@@ -11,14 +11,16 @@ using namespace std;
 #include "LinkedList.h"
 
 
-void setUpRoute(List stationList, List weightList, AdjacencyList metro) {
+void setUpRoute(List stationList, List weightList, AdjacencyList metro, LinkedList refTable) {
+
+
 	// forward direction
 	for (int i = 0; i < weightList.getLength(); i++)
 	{
 		string currentStation = stationList.get(i);
-		int currentStationIndex = metro.getIndex(currentStation);
+		int currentStationIndex = metro.getIndex(currentStation, refTable);
 		string nextStation = stationList.get(i + 1);
-		int nextStationIndex = metro.getIndex(nextStation);
+		int nextStationIndex = metro.getIndex(nextStation, refTable);
 		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
 		//cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
 	}
@@ -27,9 +29,9 @@ void setUpRoute(List stationList, List weightList, AdjacencyList metro) {
 	for (int i = weightList.getLength() - 1; i >= 0; i--)
 	{
 		string currentStation = stationList.get(i + 1);
-		int currentStationIndex = metro.getIndex(currentStation);
+		int currentStationIndex = metro.getIndex(currentStation, refTable);
 		string nextStation = stationList.get(i);
-		int nextStationIndex = metro.getIndex(nextStation);
+		int nextStationIndex = metro.getIndex(nextStation, refTable);
 		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
 		//cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
 	}
@@ -79,7 +81,7 @@ List readStation() {
 	return stationList;
 }
 
-void getWeight(AdjacencyList metro) {
+void getWeight(AdjacencyList metro, LinkedList refTable) {
 	List routes;
 	ifstream myFile;
 	List stationList;
@@ -105,7 +107,7 @@ void getWeight(AdjacencyList metro) {
 			}
 
 			if (count % 2 != 0) {
-				setUpRoute(stationList, weightList, metro);
+				setUpRoute(stationList, weightList, metro, refTable);
 				int stationListNo = stationList.getLength();
 				int weightListNo = weightList.getLength();
 				for (int a = 0; a < stationListNo; a++) {
@@ -267,8 +269,14 @@ int main()
 	List fare = getFare();
 	AdjacencyList metro;
 	metro = setup(stationList, interchangeList, metro);
-	getWeight(metro);
-	LinkedList stationCodeList = metro.getAllLines();
+	LinkedList refTable = metro.getAllLines();
+	
+	for (int i = 0; i < refTable.getLength(); i++)
+	{
+		cout << refTable.get(i) << " " << refTable.getStartPosition(i) << " " << refTable.getEndPosition(i) << endl;
+	}
+	getWeight(metro, refTable);
+	//LinkedList stationCodeList = metro.getAllLines();
 
 	//uncomment bottom section if u want to verify the stationcode linnked list
 	/*cout << metro.getSize() << endl;

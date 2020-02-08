@@ -46,5 +46,17 @@ public:
 
 	// display all the items in the list
 	void print();
+
+	bool update(int index, int endPosition);
+
+	bool updateInt(int index, int startPosition, int endPosition);
+
+	int getStartPosition(int index);
+
+	int getStartPosition(LinkedListItemType code);
+
+	int getEndPosition(int index);
+
+	int getEndPosition(LinkedListItemType code);
 };
 
