@@ -82,8 +82,10 @@ public:
 
 	int displayNumberOfStation(LineType line);
 
-	bool modifyRoutes(LineType line, int code, int index, int weight1, int weight2);
+	bool modifyRoutes(LineType line, int code, int index);
 
 	List getAllStationNumber(LineType line);
+
+	bool updateAdjacentStation(int currentIndex, NextStaType oldIndex, NextStaType nextStationIndex, DistType distance);
 };
 

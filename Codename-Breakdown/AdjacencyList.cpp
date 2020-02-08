@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "AdjacencyList.h"
+#include <cctype>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <fstream>
-
 
 AdjacencyList::AdjacencyList()
 {
@@ -540,7 +540,7 @@ int AdjacencyList::displayNumberOfStation(LineType line)
 	return numberOfLines;
 }
 
-bool AdjacencyList::modifyRoutes(LineType line, int code, int index, int weight1, int weight2) {
+bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 	HeaderNode *currentNode;
 	int counter = 0;
 	int biggestNum = -1;
@@ -549,7 +549,6 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index, int weight1
 	int frontIndex = -1;
 	int backIndex;
 	string lineCode;
-	string line;
 	string stationNum;
 	string stationNum2;
 	List numberList = getAllStationNumber(line);
@@ -577,7 +576,7 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index, int weight1
 		}
 	}
 	//getting back index and back number
-	for (int j = 0; j = numberList.getLength(); j++) {
+	for (int j = 0; j < numberList.getLength(); j++) {
 		int numberRecordInt;
 		stringstream numberRecord(numberList.get(j));
 		numberRecord >> numberRecordInt;
@@ -589,24 +588,88 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index, int weight1
 		}
 	}
 	//get the next bigger number of the inserted station number
-	for (int k = 0; k = numberList.getLength(); k++) {
+	for (int k = 0; k < numberList.getLength(); k++) {
 		int numberRecordInt;
 		stationNum2 = numberList.get(k);
 		stringstream numberRecord(stationNum2);
 		numberRecord >> numberRecordInt;
 		if (numberRecordInt > code && numberRecordInt <= backNumber) {
 			backNumber = numberRecordInt;
+			string fullBackStationCode = line + stationNum2;
+			backIndex = getIndex(fullBackStationCode);
 		}
 		else {
 			continue;
 		}
 	}
-	string fullBackStationCode = line + stationNum2;
-	backIndex = getIndex(fullBackStationCode);
 	if (frontNumber != -2) {
-		addAdjacentStation(index, frontIndex, weight1);
+		string backWeight;
+		int backWeightInt;
+		while (true) {
+			bool intchecker = true;
+			cout << "Enter the route distance between the newly added station and the station behind it:";
+			cin >> backWeight;
+			for (int l = 0; l < backWeight.size(); l++) {
+				if (isdigit(backWeight[l])) {
+					continue;
+				}
+				else {
+					intchecker = false;
+					break;
+				}
+			}
+			if (intchecker == true) {
+				stringstream ssback(backWeight);
+				ssback >> backWeightInt;
+				addAdjacentStation(index, frontIndex, backWeightInt);
+				updateAdjacentStation(backIndex, frontIndex, index, backWeightInt);
+				break;
+			}
+			else {
+				cout << "Route distance can only be in integers" << endl;
+			}
+		}
 	}
 	if (backNumber != -2) {
-		addAdjacentStation(index, backIndex, weight2);
+		string frontWeight;
+		int frontWeightInt;
+		while(true) {
+			bool intchecker = true;
+			cout << "Enter the route distance between the newly added station and the station behind it:";
+			cin >> frontWeight;
+			for (int l = 0; l < frontWeight.size(); l++) {
+				if (isdigit(frontWeight[l])) {
+					continue;
+				}
+				else {
+					intchecker = false;
+					break;
+				}
+			}
+			if (intchecker == true) {
+				stringstream ssfront(frontWeight);
+				ssfront >> frontWeightInt;
+				addAdjacentStation(index, backIndex,frontWeightInt);
+				updateAdjacentStation(frontIndex, backIndex, index, frontWeightInt);
+				break;
+			}
+			else {
+				cout << "Route distance can only be in integers" << endl;
+			}
+		}
 	}
+	return true;
+}
+
+bool AdjacencyList::updateAdjacentStation(int currentIndex, NextStaType oldIndex , NextStaType nextStationIndex, DistType distance) {
+	HeaderNode *currentHeaderNode;
+	Node *currentNode;
+	currentHeaderNode = stations[currentIndex];
+	currentNode = currentHeaderNode->next;
+	while (currentNode->nextStationIndex != oldIndex) {
+		currentNode = currentNode->next;
+	}
+	currentNode->nextStationIndex = nextStationIndex;
+	currentNode->distance = distance;
+	return true;
 }

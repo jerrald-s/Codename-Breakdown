@@ -125,7 +125,7 @@ List getFare() {
 	return fareList;
 }
 
-void menu(AdjacencyList metro, List fare) {
+void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 	bool run = true;
 	while (run) {
 		cout << "---------------- Main Menu ------------------- \n [1] Display all stations in a given line \n [2] Display station information \n [3] Add and save new station on a given line \n [4] Display route information \n [0] Exit \n---------------------------------------------- \n Enter your option : ";
@@ -149,17 +149,34 @@ void menu(AdjacencyList metro, List fare) {
 			string codeandnumber;
 			string line;
 			string stationCode;
+			bool stationExist = false;
 			cout << "Key in station name: ";
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, name);
-			cout << "Key in line code: ";
-			cin >> codeandnumber;
-			for (int i = 0; i < codeandnumber.length(); i++) {
-				if (isdigit(codeandnumber[i]))
-					stationCode.push_back(codeandnumber[i]);
-				else if ((codeandnumber[i] >= 'A' && codeandnumber[i] <= 'Z') ||
-					(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
-					line.push_back(codeandnumber[i]);
+			if (!metro.getIndexFromName(name)) {
+				cout << "Station name existed already..." << endl;
+			}
+			else {
+				cout << "Key in line code: ";
+				cin >> codeandnumber;
+				if (!metro.getIndex(codeandnumber)) {
+					cout << "Station Code name existed already..." << endl;
+				}
+				else {
+					for (int i = 0; i < codeandnumber.length(); i++) {
+						if (isdigit(codeandnumber[i]))
+							stationCode.push_back(codeandnumber[i]);
+						else if ((codeandnumber[i] >= 'A' && codeandnumber[i] <= 'Z') ||
+							(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
+							line.push_back(codeandnumber[i]);
+					}
+					int stationNumInt;
+					stringstream stationNumSS(stationCode);
+					stationNumSS >> stationNumInt;
+					metro.addStation(line, stationCode, name);
+					metro.modifyRoutes(line, stationNumInt, metro.getIndexFromName(name));
+					cout << "Added station" << endl;
+				}
 			}
 		}
 		if (x == 4) {
@@ -274,5 +291,5 @@ int main()
 		metro.get(i);
 		cout << i << endl;
 	}*/
-	menu(metro, fare);
+	menu(metro, fare, refTable);
 }
