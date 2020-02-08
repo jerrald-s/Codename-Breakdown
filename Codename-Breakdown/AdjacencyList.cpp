@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "AdjacencyList.h"
 #include <string>
-#include "List.h"
 #include <sstream>
-#include "BST.h"
 #include <iostream>
 #include <fstream>
-#include "LinkedList.h"
 
 
 AdjacencyList::AdjacencyList()
@@ -25,6 +22,7 @@ bool AdjacencyList::addStation(LineType line, CodeType stationCode, ItemType nam
 	headerNode->line = line;
 	headerNode->stationCode = stationCode;
 	headerNode->name = name;
+	headerNode->visited = false;
 	headerNode->next = NULL;
 	stations[size] = headerNode;
 	size++;
@@ -101,6 +99,55 @@ int AdjacencyList::getIndex(FullCodeType fullStationCode)
 	return -1;
 }
 
+int AdjacencyList::getIndex(FullCodeType fullStationCode, LinkedList refTable)
+{
+	HeaderNode *currentNode;
+	string line;
+	for (int p = 0; p < fullStationCode.length(); p++)
+	{
+		if ((fullStationCode[p] >= 'A' && fullStationCode[p] <= 'Z') ||
+			(fullStationCode[p] >= 'a' && fullStationCode[p] <= 'z'))
+		{
+			line.push_back(fullStationCode[p]);
+		}
+	}
+
+	int startIndex = refTable.getStartPosition(line);
+	int endIndex = refTable.getEndPosition(line);
+
+	for (int i = startIndex; i < (endIndex + 1); i++)
+	{
+		currentNode = stations[i];
+
+		// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+		List tokens;
+		stringstream ss(currentNode->line);
+		string intermediate;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		List tokens2;
+		stringstream ss2(currentNode->stationCode);
+		string intermediate2;
+		while (getline(ss2, intermediate2, ','))
+		{
+			tokens2.add(intermediate2);
+		}
+
+		// Check whether station exist
+		for (int j = 0; j < tokens.getLength(); j++)
+		{
+			string stationCode = tokens.get(j) + tokens2.get(j);
+			if (stationCode == fullStationCode)
+			{
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
 // Getting of station index using Line+Code, not Station Name.
 int AdjacencyList::getIndex(LineType line, CodeType stationCode)
 {
@@ -133,6 +180,18 @@ int AdjacencyList::getIndex(LineType line, CodeType stationCode)
 				return i;
 			}
 		}
+	}
+	return -1;
+}
+
+int AdjacencyList::getIndexFromName(string name)
+{
+	for (int i = 0; i < size; i++)
+	{
+		if (stations[i]->name == name)
+			return i;
+		//else
+			//cout << stations[i]->name << endl;
 	}
 	return -1;
 }
@@ -221,8 +280,88 @@ bool AdjacencyList::displayStationInformation(ItemType name)
 	}
 }
 
-bool AdjacencyList::displayRouteAndPrice()
+bool AdjacencyList::displayRouteAndPrice(int startIndex, int endIndex, AdjacencyList metro, List fare)
 {
+	DijkstraAlgorithm shortestPath;
+	Queue queue;
+	HeaderNode *currentNode;
+	Node *tempNode;
+	int currentSelected = 0;
+	queue.enqueue(startIndex);
+
+	int currentIndex = startIndex;
+	
+	currentNode = stations[startIndex];
+	shortestPath.add(retrieveFullStationCode(stations[currentIndex]->line, stations[currentIndex]->stationCode), 0, queue, true);
+	stations[currentIndex]->visited = true;
+	while (currentIndex != endIndex)
+	{
+		tempNode = currentNode->next;
+		while (tempNode != NULL)
+		{
+			if (stations[tempNode->nextStationIndex]->visited == false) {
+				string fullStationCode = retrieveFullStationCode(stations[tempNode->nextStationIndex]->line, stations[tempNode->nextStationIndex]
+					->stationCode);
+				int tempDistance = shortestPath.get(currentSelected)->totalDistance + tempNode->distance;
+				int checkExist = shortestPath.checkExist(fullStationCode);
+				Queue tempQueue;
+				tempQueue = tempQueue.clone(shortestPath.get(currentSelected)->path, tempQueue);
+				tempQueue.enqueue(tempNode->nextStationIndex);
+				if (checkExist == -1)
+				{
+					shortestPath.add(fullStationCode, tempDistance, tempQueue, false);
+					//cout << "Station " << fullStationCode << " Added!" << endl;
+				}
+				else
+				{
+					if (tempDistance < shortestPath.get(checkExist)->totalDistance)
+					{
+						shortestPath.update(tempDistance, tempQueue, checkExist);
+					}
+				}
+			}
+			tempNode = tempNode->next;
+		}
+		currentSelected = shortestPath.getNextShortest();
+		currentIndex = shortestPath.get(currentSelected)->path.getBack();
+		currentNode = stations[currentIndex];
+		currentNode->visited = true;
+	}
+	//cout << "Dest: " << currentNode->name << endl;
+	List pathIndexList;
+	pathIndexList = shortestPath.get(currentSelected)->path.displayItems(pathIndexList);
+	for (int j = 0; j < pathIndexList.getLength(); j++)
+	{
+		cout << retrieveFullStationCode(stations[stoi(pathIndexList.get(j))]->line, stations[stoi(pathIndexList.get(j))]->stationCode) 
+			<< " " << stations[stoi(pathIndexList.get(j))]->name << endl;
+	}
+	cout << "Total Distance: " << shortestPath.get(currentSelected)->totalDistance << endl;
+
+	// Calculate Fare
+	double totalFare;
+	for (int p = 0; p < fare.getLength(); p++)
+	{
+		List tokens;
+		stringstream ss(fare.get(p));
+		string intermediate;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		if (shortestPath.get(currentSelected)->totalDistance >= stod(tokens.get(0)) * 1000)
+		{
+			totalFare = stod(tokens.get(1))/100;
+		}
+	}
+	cout << "Metro fare will be $" << totalFare << "." << endl;
+
+
+	// Reset all visited node's visited to false
+	int resetIndex;
+	for (int l = 0; l < metro.getSize(); l++)
+	{
+		stations[l]->visited = false;
+	}
 	return true;
 }
 
@@ -233,8 +372,6 @@ bool AdjacencyList::displayRouteAndPrice()
 void AdjacencyList::get(int index)
 {
 	cout << stations[index]->name << endl;
-	cout << stations[index]->line << endl;
-	cout << stations[index]->stationCode << endl;
 }
 
 string AdjacencyList::getLine(int index)
@@ -244,6 +381,31 @@ string AdjacencyList::getLine(int index)
 
 int AdjacencyList::getSize() {
 	return size;
+}
+
+string AdjacencyList::retrieveFullStationCode(LineType line, CodeType stationCode)
+{
+	List tokens;
+	stringstream ss(line);
+	string intermediate;
+	while (getline(ss, intermediate, ','))
+	{
+		tokens.add(intermediate);
+	}
+	List tokens2;
+	stringstream ss2(stationCode);
+	string intermediate2;
+	while (getline(ss2, intermediate2, ','))
+	{
+		tokens2.add(intermediate2);
+	}
+
+	string fullStationCode = tokens.get(0) + tokens2.get(0);
+	for (int i = 1; i < tokens.getLength(); i++)
+	{
+		fullStationCode = fullStationCode + "/" + tokens.get(i) + tokens2.get(i);
+	}
+	return fullStationCode;
 }
 
 LinkedList AdjacencyList::getAllLines() {

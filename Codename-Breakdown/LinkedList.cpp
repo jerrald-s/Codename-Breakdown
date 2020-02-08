@@ -118,3 +118,78 @@ void LinkedList::print() {
 	}
 	//cout << endl;
 }
+
+bool LinkedList::update(int index, int endPosition)
+{
+	int count = 0;
+	LinkedListNode *tempNode = firstNode;
+	while (count != index)
+	{
+		tempNode = tempNode->next;
+		count++;
+	}
+	tempNode->endPosition = endPosition;
+	return true;
+}
+
+bool LinkedList::updateInt(int index, int startPosition, int endPosition)
+{
+	int count = 0;
+	LinkedListNode *tempNode = firstNode;
+	while (count != index)
+	{
+		tempNode = tempNode->next;
+		count++;
+	}
+	tempNode->endPosition = endPosition;
+	tempNode->startPosition = startPosition;
+	return true;
+}
+
+int LinkedList::getStartPosition(int index)
+{
+	int count = 0;
+	LinkedListNode *tempNode = firstNode;
+	while (count != index)
+	{
+		tempNode = tempNode->next;
+		count++;
+	}
+	return tempNode->startPosition;
+}
+
+int LinkedList::getStartPosition(LinkedListItemType code)
+{
+	LinkedListNode *tempNode = firstNode;
+	while (tempNode != NULL)
+	{
+		if (tempNode->item == code)
+			return tempNode->startPosition;
+		tempNode = tempNode->next;
+	}
+	return -1;
+}
+
+int LinkedList::getEndPosition(int index)
+{
+	int count = 0;
+	LinkedListNode *tempNode = firstNode;
+	while (count != index)
+	{
+		tempNode = tempNode->next;
+		count++;
+	}
+	return tempNode->endPosition;
+}
+
+int LinkedList::getEndPosition(LinkedListItemType code)
+{
+	LinkedListNode *tempNode = firstNode;
+	while (tempNode != NULL)
+	{
+		if (tempNode->item == code)
+			return tempNode->endPosition;
+		tempNode = tempNode->next;
+	}
+	return -1;
+}
