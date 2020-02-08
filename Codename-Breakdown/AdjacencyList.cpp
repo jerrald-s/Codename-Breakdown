@@ -547,7 +547,7 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 	int frontNumber = -2;
 	int backNumber = -2;
 	int frontIndex = -1;
-	int backIndex;
+	int backIndex = -1;
 	string lineCode;
 	string stationNum;
 	string stationNum2;
@@ -565,9 +565,9 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 				int stationNumInt;
 				stringstream stationNumSS(stationNum);
 				stationNumSS >> stationNumInt;
-				if (stationNumInt > frontNumber && stationNumInt < code) {
-					frontNumber = stationNumInt;
-					frontIndex = i;
+				if (stationNumInt > backNumber && stationNumInt < code) {
+					backNumber = stationNumInt;
+					backIndex = i;
 				}
 			}
 			else {
@@ -575,13 +575,13 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 			}
 		}
 	}
-	//getting back index and back number
+	//getting front index and front number
 	for (int j = 0; j < numberList.getLength(); j++) {
 		int numberRecordInt;
 		stringstream numberRecord(numberList.get(j));
 		numberRecord >> numberRecordInt;
-		if (backNumber < numberRecordInt) {
-			backNumber = numberRecordInt;
+		if (frontNumber < numberRecordInt) {
+			frontNumber = numberRecordInt;
 		}
 		else {
 			continue;
@@ -593,16 +593,16 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 		stationNum2 = numberList.get(k);
 		stringstream numberRecord(stationNum2);
 		numberRecord >> numberRecordInt;
-		if (numberRecordInt > code && numberRecordInt <= backNumber) {
-			backNumber = numberRecordInt;
+		if (numberRecordInt > code && numberRecordInt <= frontNumber) {
+			frontNumber = numberRecordInt;
 			string fullBackStationCode = line + stationNum2;
-			backIndex = getIndex(fullBackStationCode);
+			frontIndex = getIndex(fullBackStationCode);
 		}
 		else {
 			continue;
 		}
 	}
-	if (frontNumber != -2) {
+	if (backIndex != -1) {
 		string backWeight;
 		int backWeightInt;
 		while (true) {
@@ -621,7 +621,7 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 			if (intchecker == true) {
 				stringstream ssback(backWeight);
 				ssback >> backWeightInt;
-				addAdjacentStation(index, frontIndex, backWeightInt);
+				addAdjacentStation(index, backIndex, backWeightInt);
 				updateAdjacentStation(backIndex, frontIndex, index, backWeightInt);
 				break;
 			}
@@ -630,12 +630,12 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 			}
 		}
 	}
-	if (backNumber != -2) {
+	if (frontIndex != -1) {
 		string frontWeight;
 		int frontWeightInt;
 		while(true) {
 			bool intchecker = true;
-			cout << "Enter the route distance between the newly added station and the station behind it:";
+			cout << "Enter the route distance between the newly added station and the station in front of it:";
 			cin >> frontWeight;
 			for (int l = 0; l < frontWeight.size(); l++) {
 				if (isdigit(frontWeight[l])) {
@@ -649,7 +649,7 @@ bool AdjacencyList::modifyRoutes(LineType line, int code, int index) {
 			if (intchecker == true) {
 				stringstream ssfront(frontWeight);
 				ssfront >> frontWeightInt;
-				addAdjacentStation(index, backIndex,frontWeightInt);
+				addAdjacentStation(index, frontIndex,frontWeightInt);
 				updateAdjacentStation(frontIndex, backIndex, index, frontWeightInt);
 				break;
 			}
@@ -665,11 +665,26 @@ bool AdjacencyList::updateAdjacentStation(int currentIndex, NextStaType oldIndex
 	HeaderNode *currentHeaderNode;
 	Node *currentNode;
 	currentHeaderNode = stations[currentIndex];
-	currentNode = currentHeaderNode->next;
-	while (currentNode->nextStationIndex != oldIndex) {
-		currentNode = currentNode->next;
+	if (currentHeaderNode->next != nullptr) {
+		currentNode = currentHeaderNode->next;
+		if (oldIndex != -1) {
+			while (currentNode->nextStationIndex != oldIndex && currentNode->next != nullptr) {
+				currentNode = currentNode->next;
+			}
+		}
+		if (currentNode->nextStationIndex == oldIndex) {
+			currentNode->nextStationIndex = nextStationIndex;
+			currentNode->distance = distance;
+		}
+		else {
+			addAdjacentStation(currentIndex, nextStationIndex, distance);
+		}
 	}
-	currentNode->nextStationIndex = nextStationIndex;
-	currentNode->distance = distance;
+	else {
+		if (oldIndex == -1) {
+			oldIndex = currentIndex;
+			addAdjacentStation(oldIndex, nextStationIndex, distance);
+		}
+	}
 	return true;
 }

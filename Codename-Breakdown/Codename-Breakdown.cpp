@@ -135,7 +135,7 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 			string line;
 			cout << "Which line do you want to see: ";
 			cin >> line;
-			cout << metro.displayLine(line) << endl;
+			metro.displayLine(line);
 		}
 		if (x == 2) {
 			string name;
@@ -153,13 +153,13 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 			cout << "Key in station name: ";
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, name);
-			if (!metro.getIndexFromName(name)) {
+			if (metro.getIndexFromName(name) != -1) {
 				cout << "Station name existed already..." << endl;
 			}
 			else {
 				cout << "Key in line code: ";
 				cin >> codeandnumber;
-				if (!metro.getIndex(codeandnumber)) {
+				if (metro.getIndex(codeandnumber) != -1) {
 					cout << "Station Code name existed already..." << endl;
 				}
 				else {
@@ -170,12 +170,38 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 							(codeandnumber[i] >= 'a' && codeandnumber[i] <= 'z'))
 							line.push_back(codeandnumber[i]);
 					}
-					int stationNumInt;
-					stringstream stationNumSS(stationCode);
-					stationNumSS >> stationNumInt;
-					metro.addStation(line, stationCode, name);
-					metro.modifyRoutes(line, stationNumInt, metro.getIndexFromName(name));
-					cout << "Added station" << endl;
+					bool existingLine = false;
+					for (int i = 0; i < refTable.getLength(); i++)
+					{
+						if (refTable.get(i) == line) {
+							existingLine = true;
+							break;
+						}
+						else {
+							continue;
+						}
+					}
+					if (existingLine == true) {
+						int stationNumInt;
+						stringstream stationNumSS(stationCode);
+						stationNumSS >> stationNumInt;
+						metro.addStation(line, stationCode, name);
+						metro.modifyRoutes(line, stationNumInt, metro.getIndexFromName(name));
+						cout << "Added station" << endl;
+					}
+					else {
+						cout << "---------------- Alert ------------------- \n It seems you are trying to add a new line, are you sure? \n [1]Y \n [2]N \n---------------------------------------------- \n Enter your option : ";
+						int answer;
+						cin >> answer;
+						if (answer == 1) {
+							metro.addStation(line, stationCode, name);
+							refTable = metro.getAllLines();
+							cout << "Added station with new line " << line << endl;
+						}
+						else {
+							cout << "Ending option..." << endl;
+						}
+					}
 				}
 			}
 		}
@@ -283,13 +309,5 @@ int main()
 		cout << refTable.get(i) << " " << refTable.getStartPosition(i) << " " << refTable.getEndPosition(i) << endl;
 	}
 	getWeight(metro, refTable);
-	//LinkedList stationCodeList = metro.getAllLines();
-
-	//uncomment bottom section if u want to verify the stationcode linnked list
-	/*cout << metro.getSize() << endl;
-	for (int i = 0; i < metro.getSize(); i++) {
-		metro.get(i);
-		cout << i << endl;
-	}*/
 	menu(metro, fare, refTable);
 }
