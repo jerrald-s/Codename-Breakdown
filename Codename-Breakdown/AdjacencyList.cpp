@@ -237,6 +237,11 @@ void AdjacencyList::get(int index)
 	cout << stations[index]->stationCode << endl;
 }
 
+string AdjacencyList::getLine(int index)
+{
+	return stations[index]->line;
+}
+
 int AdjacencyList::getSize() {
 	return size;
 }
@@ -292,6 +297,47 @@ LinkedList AdjacencyList::getAllLines() {
 	return lineList;
 }
 
+List AdjacencyList::getAllStationNumber(LineType line) {
+	List numberList;
+	for (int i = 0; i < size; i++)
+	{
+		// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+		List tokens;
+		stringstream ss(stations[i]->line);
+		string intermediate;
+		while (getline(ss, intermediate, ','))
+		{
+			tokens.add(intermediate);
+		}
+		List tokens2;
+		stringstream ss2(stations[i]->stationCode);
+		string intermediate2;
+		while (getline(ss2, intermediate2, ','))
+		{
+			tokens2.add(intermediate2);
+		}
+		// Check whether station exist
+		for (int j = 0; j < tokens.getLength(); j++)
+		{
+			if (tokens.get(j) == line)
+			{
+				//cout << stations[i]->name << endl;
+				if (tokens.getLength() == tokens2.getLength()) {
+					StaCodeType stationCode = stoi(tokens2.get(j));
+					numberList.add(tokens2.get(j));
+				}
+				//specially for full station codes without number
+				else
+				{
+					numberList.add("-1");
+				}
+			}
+		}
+	}
+	return numberList;
+
+}
+
 int AdjacencyList::displayNumberOfStation(LineType line)
 {
 	int numberOfLines = 0;
@@ -330,4 +376,75 @@ int AdjacencyList::displayNumberOfStation(LineType line)
 		}
 	}
 	return numberOfLines;
+}
+
+bool AdjacencyList::modifyRoutes(LineType line, int code, int index, int weight1, int weight2) {
+	HeaderNode *currentNode;
+	int counter = 0;
+	int biggestNum = -1;
+	int frontNumber = -2;
+	int backNumber = -2;
+	int frontIndex = -1;
+	int backIndex;
+	string lineCode;
+	string line;
+	string stationNum;
+	string stationNum2;
+	List numberList = getAllStationNumber(line);
+	int numberOfStations = displayNumberOfStation(line);
+	for (int i = 0; i < size; i++) {
+		currentNode = stations[i];
+		bool checker = false;
+		stringstream ss1(currentNode->line);
+		stringstream ss2(currentNode->stationCode);
+		while (getline(ss1, lineCode, ',')) {
+			(getline(ss2, stationNum, ','));
+			if (lineCode == line) {
+				counter++;
+				int stationNumInt;
+				stringstream stationNumSS(stationNum);
+				stationNumSS >> stationNumInt;
+				if (stationNumInt > frontNumber && stationNumInt < code) {
+					frontNumber = stationNumInt;
+					frontIndex = i;
+				}
+			}
+			else {
+				continue;
+			}
+		}
+	}
+	//getting back index and back number
+	for (int j = 0; j = numberList.getLength(); j++) {
+		int numberRecordInt;
+		stringstream numberRecord(numberList.get(j));
+		numberRecord >> numberRecordInt;
+		if (backNumber < numberRecordInt) {
+			backNumber = numberRecordInt;
+		}
+		else {
+			continue;
+		}
+	}
+	//get the next bigger number of the inserted station number
+	for (int k = 0; k = numberList.getLength(); k++) {
+		int numberRecordInt;
+		stationNum2 = numberList.get(k);
+		stringstream numberRecord(stationNum2);
+		numberRecord >> numberRecordInt;
+		if (numberRecordInt > code && numberRecordInt <= backNumber) {
+			backNumber = numberRecordInt;
+		}
+		else {
+			continue;
+		}
+	}
+	string fullBackStationCode = line + stationNum2;
+	backIndex = getIndex(fullBackStationCode);
+	if (frontNumber != -2) {
+		addAdjacentStation(index, frontIndex, weight1);
+	}
+	if (backNumber != -2) {
+		addAdjacentStation(index, backIndex, weight2);
+	}
 }

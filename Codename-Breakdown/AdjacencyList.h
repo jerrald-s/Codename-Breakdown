@@ -56,6 +56,8 @@ public:
 
 	void get(int index);
 
+	string getLine(int index);
+
 	int displayLine(LineType line);
 
 	bool displayStationInformation(ItemType name);
@@ -69,5 +71,9 @@ public:
 	LinkedList getAllLines();
 
 	int displayNumberOfStation(LineType line);
+
+	bool modifyRoutes(LineType line, int code, int index, int weight1, int weight2);
+
+	List getAllStationNumber(LineType line);
 };
 
