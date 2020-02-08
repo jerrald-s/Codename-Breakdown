@@ -13,8 +13,8 @@ using namespace std;
 
 void setUpRoute(List stationList, List weightList, AdjacencyList metro, LinkedList refTable) {
 
+	cout << "Setting up route..." << endl;
 
-	// forward direction
 	for (int i = 0; i < weightList.getLength(); i++)
 	{
 		string currentStation = stationList.get(i);
@@ -22,17 +22,7 @@ void setUpRoute(List stationList, List weightList, AdjacencyList metro, LinkedLi
 		string nextStation = stationList.get(i + 1);
 		int nextStationIndex = metro.getIndex(nextStation, refTable);
 		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
-		//cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
-	}
-
-	// other direction
-	for (int i = weightList.getLength() - 1; i >= 0; i--)
-	{
-		string currentStation = stationList.get(i + 1);
-		int currentStationIndex = metro.getIndex(currentStation, refTable);
-		string nextStation = stationList.get(i);
-		int nextStationIndex = metro.getIndex(nextStation, refTable);
-		metro.addAdjacentStation(currentStationIndex, nextStationIndex, stoi(weightList.get(i)));
+		metro.addAdjacentStation(nextStationIndex, currentStationIndex, stoi(weightList.get(i)));
 		//cout << currentStation << " goes to " << nextStation << " after " << weightList.get(i) << "metres." << endl;
 	}
 }
