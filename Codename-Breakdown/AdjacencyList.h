@@ -87,5 +87,7 @@ public:
 	List getAllStationNumber(LineType line);
 
 	bool updateAdjacentStation(int currentIndex, NextStaType oldIndex, NextStaType nextStationIndex, DistType distance);
+
+	void saveStation(AdjacencyList metro, LinkedList refTable);
 };
 

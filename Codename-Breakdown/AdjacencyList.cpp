@@ -476,7 +476,7 @@ List AdjacencyList::getAllStationNumber(LineType line) {
 		string intermediate2;
 		while (getline(ss2, intermediate2, ','))
 		{
-			tokens2.add(intermediate2);
+				tokens2.add(intermediate2);
 		}
 		// Check whether station exist
 		for (int j = 0; j < tokens.getLength(); j++)
@@ -484,14 +484,14 @@ List AdjacencyList::getAllStationNumber(LineType line) {
 			if (tokens.get(j) == line)
 			{
 				//cout << stations[i]->name << endl;
-				if (tokens.getLength() == tokens2.getLength()) {
+				if (tokens2.get(j) != "") {
 					StaCodeType stationCode = stoi(tokens2.get(j));
 					numberList.add(tokens2.get(j));
 				}
 				//specially for full station codes without number
 				else
 				{
-					numberList.add("-1");
+					numberList.add("0");
 				}
 			}
 		}
@@ -687,4 +687,104 @@ bool AdjacencyList::updateAdjacentStation(int currentIndex, NextStaType oldIndex
 		}
 	}
 	return true;
+}
+
+void AdjacencyList::saveStation(AdjacencyList metro, LinkedList refTable) {
+	ofstream myFile;
+	string line;
+	myFile.open("NewStations.csv");
+	for (int i = 0; i < refTable.getLength(); i++)
+	{
+		cout << "Saving Stations.csv..." << endl;
+		int countNextStation = 0;
+		int numOfStationCounted = 0;
+		int frontNumber = 99999;
+		line = refTable.get(i);
+		List numberList = getAllStationNumber(line);
+		//getting front number
+		for (int j = 0; j < numberList.getLength(); j++) {
+			int numberRecordInt;
+			stringstream numberRecord(numberList.get(j));
+			numberRecord >> numberRecordInt;
+			if (numberRecordInt < frontNumber) {
+				frontNumber = numberRecordInt;
+			}
+			else {
+				continue;
+			}
+		}
+		int numberOfStation = metro.displayNumberOfStation(line);
+		while (numOfStationCounted != numberOfStation) {
+			int k = 0;
+			for (k; k < metro.getSize(); k++) {
+				bool added = false;
+				string writeLine = "";
+				// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+				List tokens;
+				stringstream ss(stations[k]->line);
+				string intermediate;
+				while (getline(ss, intermediate, ','))
+				{
+					tokens.add(intermediate);
+				}
+				List tokens2;
+				string stringinter2 = stations[k]->stationCode;
+				int stringinter2count = stringinter2.length();
+				stringstream ss2(stations[k]->stationCode);
+				string intermediate2;
+				while (getline(ss2, intermediate2, ','))
+				{
+					tokens2.add(intermediate2);
+				}
+				if (stringinter2.at(stringinter2count - 1) == ',') {
+					tokens2.add("0");
+				}
+				// Check whether station exist
+				for (int l = 0; l < tokens.getLength(); l++)
+				{
+					if (tokens.get(l) == line)
+					{
+						int stationNum;
+						stringstream ssStationNum(tokens2.get(l));
+						ssStationNum >> stationNum;
+						if (stationNum != frontNumber) {
+							continue;
+						}
+						//else if (stationNum)
+						else {
+							//cout << stations[k]->name << endl;
+							if (tokens.getLength() == tokens2.getLength()) {
+								if (tokens2.get(l) == "0") {
+									writeLine = tokens.get(l) +  "," + stations[k]->name + "\n";
+								}
+								else {
+									writeLine = tokens.get(l) + tokens2.get(l) + "," + stations[k]->name + "\n";
+								}
+								myFile << writeLine;
+								frontNumber++;
+								numOfStationCounted++;
+								added = true;
+							}
+							//specially for full station codes without number
+							else
+							{
+								writeLine = tokens.get(l) + "," + stations[k]->name + "\n";
+								myFile << writeLine;
+								frontNumber++;
+								numOfStationCounted++;
+								added = true;
+							}
+						}
+					}
+				}
+				if(added == true){
+					break;
+				}
+				if (k + 1 == metro.getSize()) {
+					frontNumber++;
+					break;
+				}
+			}
+		}
+	}
 }

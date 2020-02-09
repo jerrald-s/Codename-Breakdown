@@ -129,22 +129,22 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 	bool run = true;
 	while (run) {
 		cout << "---------------- Main Menu ------------------- \n [1] Display all stations in a given line \n [2] Display station information \n [3] Add and save new station on a given line \n [4] Display route information \n [0] Exit \n---------------------------------------------- \n Enter your option : ";
-		int x;
+		string x;
 		cin >> x;
-		if (x == 1) {
+		if (x == "1") {
 			string line;
 			cout << "Which line do you want to see: ";
 			cin >> line;
 			metro.displayLine(line);
 		}
-		if (x == 2) {
+		else if (x == "2") {
 			string name;
 			cout << "Which station do you want to see: ";
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, name);
 			metro.displayStationInformation(name);
 		}
-		if (x == 3) {
+		else if (x == "3") {
 			string name;
 			string codeandnumber;
 			string line;
@@ -191,9 +191,9 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 					}
 					else {
 						cout << "---------------- Alert ------------------- \n It seems you are trying to add a new line, are you sure? \n [1]Y \n [2]N \n---------------------------------------------- \n Enter your option : ";
-						int answer;
+						string answer;
 						cin >> answer;
-						if (answer == 1) {
+						if (answer == "1") {
 							metro.addStation(line, stationCode, name);
 							refTable = metro.getAllLines();
 							cout << "Added station with new line " << line << endl;
@@ -205,7 +205,7 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 				}
 			}
 		}
-		if (x == 4) {
+		else if (x == "4") {
 			string startName;
 			string destName;
 			int startIndex;
@@ -228,8 +228,12 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 			else
 				cout << "Invalid station name entered." << endl;
 		}
-		if (x == 0) {
+		else if (x == "0") {
+			metro.saveStation(metro, refTable);
 			run = false;
+		}
+		else {
+			cout << "Invalid option..." << endl;
 		}
 	}
 }
@@ -303,11 +307,10 @@ int main()
 	AdjacencyList metro;
 	metro = setup(stationList, interchangeList, metro);
 	LinkedList refTable = metro.getAllLines();
-	
-	for (int i = 0; i < refTable.getLength(); i++)
+	/*for (int i = 0; i < refTable.getLength(); i++)
 	{
 		cout << refTable.get(i) << " " << refTable.getStartPosition(i) << " " << refTable.getEndPosition(i) << endl;
-	}
+	}*/
 	getWeight(metro, refTable);
 	menu(metro, fare, refTable);
 }
