@@ -6,16 +6,18 @@
 #include <iostream>
 #include <fstream>
 
+// Constructor
 AdjacencyList::AdjacencyList()
 {
 	size = 0;
 }
 
-
+// Destructor
 AdjacencyList::~AdjacencyList()
 {
 }
 
+// Adds a station into the array
 bool AdjacencyList::addStation(LineType line, CodeType stationCode, ItemType name)
 {
 	HeaderNode *headerNode = new HeaderNode;
@@ -29,6 +31,7 @@ bool AdjacencyList::addStation(LineType line, CodeType stationCode, ItemType nam
 	return true;
 }
 
+// Updates an existing station into an interchange station
 bool AdjacencyList::addIntStation(LineType line, CodeType stationCode, int index)
 {
 	HeaderNode *currentNode;
@@ -38,6 +41,7 @@ bool AdjacencyList::addIntStation(LineType line, CodeType stationCode, int index
 	return true;
 }
 
+// Adds node that points to station that are adjacent to the station
 bool AdjacencyList::addAdjacentStation(int currentIndex, NextStaType nextStationIndex, DistType distance)
 {
 	HeaderNode *currentStation = stations[currentIndex];
@@ -63,6 +67,7 @@ bool AdjacencyList::addAdjacentStation(int currentIndex, NextStaType nextStation
 	return true;
 }
 
+// Returns ArrayIndex given the fullStationCode(such as EW1)
 int AdjacencyList::getIndex(FullCodeType fullStationCode)
 {
 	HeaderNode *currentNode;
@@ -99,6 +104,9 @@ int AdjacencyList::getIndex(FullCodeType fullStationCode)
 	return -1;
 }
 
+// Returns ArrayIndex given the fullStationCode and refTable
+// More efficient then the method above as it cuts down
+// on looping through the whole array
 int AdjacencyList::getIndex(FullCodeType fullStationCode, LinkedList refTable)
 {
 	HeaderNode *currentNode;
@@ -184,6 +192,7 @@ int AdjacencyList::getIndex(LineType line, CodeType stationCode)
 	return -1;
 }
 
+// Returns the ArrayIndex given the station name
 int AdjacencyList::getIndexFromName(string name)
 {
 	for (int i = 0; i < size; i++)
@@ -196,6 +205,10 @@ int AdjacencyList::getIndexFromName(string name)
 	return -1;
 }
 
+// Given a valid train line, it adds the station within the same
+// line into a BST. Then, using inorder traversal, it displays
+// out the stations.
+// Returns total number of stations
 int AdjacencyList::displayLine(LineType line)
 {
 	int numberOfLines = 0;
@@ -280,6 +293,8 @@ bool AdjacencyList::displayStationInformation(ItemType name)
 	}
 }
 
+// Given a start and destination index, it uses Dijkstra's Algorithm to find and
+// display the shortest route and the fare for the distance
 bool AdjacencyList::displayRouteAndPrice(int startIndex, int endIndex, AdjacencyList metro, List fare)
 {
 	DijkstraAlgorithm shortestPath;
@@ -291,15 +306,21 @@ bool AdjacencyList::displayRouteAndPrice(int startIndex, int endIndex, Adjacency
 
 	int currentIndex = startIndex;
 	
+	// First Station
 	currentNode = stations[startIndex];
 	shortestPath.add(retrieveFullStationCode(stations[currentIndex]->line, stations[currentIndex]->stationCode), 0, queue, true);
 	stations[currentIndex]->visited = true;
+
+	// While the shortestPath has not hit the destination station
 	while (currentIndex != endIndex)
 	{
 		tempNode = currentNode->next;
 		while (tempNode != NULL)
 		{
+			// Checks if the adjacent station has been visited (i.e. is already shortest from source)
+			// If not...
 			if (stations[tempNode->nextStationIndex]->visited == false) {
+				// Prepare all the required inputs for a DijkstraNode such as stationCode, totalDistance and path(Queue)
 				string fullStationCode = retrieveFullStationCode(stations[tempNode->nextStationIndex]->line, stations[tempNode->nextStationIndex]
 					->stationCode);
 				int tempDistance = shortestPath.get(currentSelected)->totalDistance + tempNode->distance;
@@ -307,11 +328,14 @@ bool AdjacencyList::displayRouteAndPrice(int startIndex, int endIndex, Adjacency
 				Queue tempQueue;
 				tempQueue = tempQueue.clone(shortestPath.get(currentSelected)->path, tempQueue);
 				tempQueue.enqueue(tempNode->nextStationIndex);
+
+				// If the station is already stored in the Dijkstra Algorithm
 				if (checkExist == -1)
 				{
 					shortestPath.add(fullStationCode, tempDistance, tempQueue, false);
 					//cout << "Station " << fullStationCode << " Added!" << endl;
 				}
+				// If not, compare the distance. If it is shorter, then it will update the DijkstraNode.
 				else
 				{
 					if (tempDistance < shortestPath.get(checkExist)->totalDistance)
@@ -322,6 +346,8 @@ bool AdjacencyList::displayRouteAndPrice(int startIndex, int endIndex, Adjacency
 			}
 			tempNode = tempNode->next;
 		}
+
+		// Selects the next station which has the shortest distance from the source
 		currentSelected = shortestPath.getNextShortest();
 		currentIndex = shortestPath.get(currentSelected)->path.getBack();
 		currentNode = stations[currentIndex];
@@ -365,29 +391,31 @@ bool AdjacencyList::displayRouteAndPrice(int startIndex, int endIndex, Adjacency
 	return true;
 }
 
-//bool AdjacencyList::addNewStation(ItemType name, LineType line, CodeType stationCode) {
-//
-//}
-
+// Prints the name of the station for the given position
 void AdjacencyList::get(int index)
 {
 	cout << stations[index]->name << endl;
 }
 
+// Returns the stationCode given the position in the Array
 string AdjacencyList::getCodes(int index)
 {
 	return stations[index]->stationCode;
 }
 
+// Returns the line of the station given the position in the Array
 string AdjacencyList::getLine(int index)
 {
 	return stations[index]->line;
 }
 
+// Returns the size of the Array(i.e. total number of stations)
 int AdjacencyList::getSize() {
 	return size;
 }
 
+// Combine the station code into one
+// and return it (such as EW,NS and 24,1 becomes EW24,NS1)
 string AdjacencyList::retrieveFullStationCode(LineType line, CodeType stationCode)
 {
 	List tokens;

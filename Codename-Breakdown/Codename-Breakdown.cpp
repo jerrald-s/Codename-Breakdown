@@ -10,7 +10,7 @@ using namespace std;
 #include "List.h"
 #include "LinkedList.h"
 
-
+// Uses the list data from Routes.csv to add adjacent stations into the Adjacency List
 void setUpRoute(List stationList, List weightList, AdjacencyList metro, LinkedList refTable) {
 
 	cout << "Setting up route..." << endl;
@@ -27,6 +27,8 @@ void setUpRoute(List stationList, List weightList, AdjacencyList metro, LinkedLi
 	}
 }
 
+// Retrieves the interchanges from Interchanges.csv
+// and returns it in a list
 List getInterchange() {
 	ifstream myFile;
 	List interchangeList;
@@ -41,6 +43,8 @@ List getInterchange() {
 	return interchangeList;
 }
 
+// Retrieves the stations from Stations.csv
+// and returns it in a list
 List readStation() {
 	ifstream myFile;
 	List stationList;
@@ -71,6 +75,8 @@ List readStation() {
 	return stationList;
 }
 
+// Retrieves the routes from Routes.csv
+// and call setUpRoute() to add it into the Adjacency List
 void getWeight(AdjacencyList metro, LinkedList refTable) {
 	List routes;
 	ifstream myFile;
@@ -112,6 +118,8 @@ void getWeight(AdjacencyList metro, LinkedList refTable) {
 	}
 }
 
+// Retrieves the fares from Fares.csv
+// and returns it in a list
 List getFare() {
 	ifstream myFile;
 	List fareList;
@@ -125,6 +133,8 @@ List getFare() {
 	return fareList;
 }
 
+// Prints out the menu, listens to the option selected
+// and run the related function corresponding to the option entered
 void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 	bool run = true;
 	while (run) {
@@ -239,6 +249,9 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 	}
 }
 
+// Setup the Adjacency List
+// By adding stations and updating stations(if it is an interchange)
+// Returns the adjacency list
 AdjacencyList setup(List stationList, List interchangeList, AdjacencyList metro)
 {
 	for (int i = 0; i < stationList.getLength(); i++)
