@@ -374,6 +374,11 @@ void AdjacencyList::get(int index)
 	cout << stations[index]->name << endl;
 }
 
+string AdjacencyList::getCodes(int index)
+{
+	return stations[index]->stationCode;
+}
+
 string AdjacencyList::getLine(int index)
 {
 	return stations[index]->line;
@@ -695,12 +700,12 @@ void AdjacencyList::saveStation(AdjacencyList metro, LinkedList refTable) {
 	myFile.open("NewStations.csv");
 	for (int i = 0; i < refTable.getLength(); i++)
 	{
-		cout << "Saving Stations.csv..." << endl;
 		int countNextStation = 0;
 		int numOfStationCounted = 0;
 		int frontNumber = 99999;
 		line = refTable.get(i);
 		List numberList = getAllStationNumber(line);
+		cout << "Saving Stations.csv for line: " << line << endl;
 		//getting front number
 		for (int j = 0; j < numberList.getLength(); j++) {
 			int numberRecordInt;
@@ -784,6 +789,190 @@ void AdjacencyList::saveStation(AdjacencyList metro, LinkedList refTable) {
 					frontNumber++;
 					break;
 				}
+			}
+		}
+	}
+}
+
+void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
+	ofstream myFile;
+	string line;
+	myFile.open("NewRoutes.csv");
+	for (int i = 0; i < refTable.getLength(); i++)
+	{
+		int countNextStation = 0;
+		int numOfStationCounted = 0;
+		int frontNumber = 99999;
+		string writeStationLine = "";
+		string writeRouteLine = "";
+		line = refTable.get(i);
+		List numberList = getAllStationNumber(line);
+		cout << "Saving Routes.csv for line: " << line << endl;
+		//getting front number
+		for (int j = 0; j < numberList.getLength(); j++) {
+			int numberRecordInt;
+			stringstream numberRecord(numberList.get(j));
+			numberRecord >> numberRecordInt;
+			if (numberRecordInt < frontNumber) {
+				frontNumber = numberRecordInt;
+			}
+			else {
+				continue;
+			}
+		}
+		int numberOfStation = metro.displayNumberOfStation(line);
+		while (numOfStationCounted != numberOfStation) {
+			int k = 0;
+			for (k; k < metro.getSize(); k++) {
+				int hehe = metro.getSize();
+				bool added = false;
+				string writeLine = "";
+				// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
+				List tokens;
+				stringstream ss(stations[k]->line);
+				string intermediate;
+				while (getline(ss, intermediate, ','))
+				{
+					tokens.add(intermediate);
+				}
+				List tokens2;
+				string stringinter2 = stations[k]->stationCode;
+				int stringinter2count = stringinter2.length();
+				stringstream ss2(stations[k]->stationCode);
+				string intermediate2;
+				while (getline(ss2, intermediate2, ','))
+				{
+					tokens2.add(intermediate2);
+				}
+				if (stringinter2.at(stringinter2count - 1) == ',') {
+					tokens2.add("0");
+				}
+				// Check whether station exist
+				for (int l = 0; l < tokens.getLength(); l++)
+				{
+					if (tokens.get(l) == line)
+					{
+						int stationNum;
+						stringstream ssStationNum(tokens2.get(l));
+						ssStationNum >> stationNum;
+						if (stationNum != frontNumber) {
+							continue;
+						}
+						//adding process if the correct order of the specific station number matches the supposed order
+						else {
+							HeaderNode *currentHeaderNode;
+							Node *currentNode;
+							currentHeaderNode = stations[k];
+							//for headernodes without nodes
+							if (currentHeaderNode->next == nullptr) {
+								writeStationLine = writeStationLine + line + to_string(stationNum);
+								frontNumber++;
+								numOfStationCounted++;
+								added = true;
+								break;
+							}
+							//for headernodes with only one node inside
+							else if (currentHeaderNode->next->next == nullptr) {
+								writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+								writeRouteLine = writeRouteLine + to_string(currentHeaderNode->next->distance) + ",";
+								frontNumber++;
+								numOfStationCounted++;
+								added = true;
+								break;
+							}
+							//for headernodes with more than one node inside
+							else {
+								currentNode = currentHeaderNode->next;
+								while (currentNode->next != nullptr) {
+									//List headerToken;
+									string innercodes;
+									List innerLinesList;
+									List innerCodesList;
+									int ssheaderToken(currentNode->nextStationIndex);
+									string innerLineString;
+									stringstream innerLines(getLine(ssheaderToken));
+									while (getline(innerLines, innerLineString, ',')) {
+										innerLinesList.add(innerLineString);
+									}
+									string innerCodeString;
+									stringstream innerCodes(getCodes(ssheaderToken));
+									while (getline(innerCodes, innerCodeString, ',')) {
+										innerCodesList.add(innerCodeString);
+									}
+									for (int m = 0; m < innerLinesList.getLength(); m++) {
+										if (innerLinesList.get(l) == line) {
+											int innerCodeInt;
+											stringstream ssInnerCode(innerCodesList.get(m));
+											ssInnerCode >> innerCodeInt;
+											if (stationNum < innerCodeInt) {
+												writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+												writeRouteLine = writeRouteLine + to_string(currentNode->distance) + ",";
+												frontNumber++;
+												numOfStationCounted++;
+												added = true;
+												break;
+											}
+										}
+										else {
+											continue;
+										}
+									}
+									currentNode = currentNode->next;
+								}
+								//for the last node base on the above func
+								if (added == false) {
+									//List headerToken;
+									string innercodes;
+									List innerLinesList;
+									List innerCodesList;
+									int ssheaderToken(currentNode->nextStationIndex);
+									string innerLineString;
+									stringstream innerLines(getLine(ssheaderToken));
+									while (getline(innerLines, innerLineString, ',')) {
+										innerLinesList.add(innerLineString);
+									}
+									string innerCodeString;
+									stringstream innerCodes(getCodes(ssheaderToken));
+									while (getline(innerCodes, innerCodeString, ',')) {
+										innerCodesList.add(innerCodeString);
+									}
+									for (int m = 0; m < innerLinesList.getLength(); m++) {
+										if (innerLinesList.get(l) == line) {
+											int innerCodeInt;
+											stringstream ssInnerCode(innerCodesList.get(m));
+											ssInnerCode >> innerCodeInt;
+											if (stationNum < innerCodeInt) {
+												writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+												writeRouteLine = writeRouteLine + to_string(currentNode->distance) + ",";
+												frontNumber++;
+												numOfStationCounted++;
+												added = true;
+												break;
+											}
+										}
+										else {
+											continue;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				if (added == true) {
+					break;
+				}
+				if (k + 1 == metro.getSize()) {
+					frontNumber++;
+					break;
+				}
+			}
+			if (numOfStationCounted == numberOfStation) {
+				writeStationLine.pop_back();
+				writeRouteLine.pop_back();
+				myFile << writeStationLine + "\n";
+				myFile << writeRouteLine + "\n";
+				break;
 			}
 		}
 	}

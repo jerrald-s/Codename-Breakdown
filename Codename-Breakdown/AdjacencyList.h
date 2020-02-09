@@ -64,6 +64,8 @@ public:
 
 	void get(int index);
 
+	string getCodes(int index);
+
 	string getLine(int index);
 
 	int displayLine(LineType line);
@@ -89,5 +91,7 @@ public:
 	bool updateAdjacentStation(int currentIndex, NextStaType oldIndex, NextStaType nextStationIndex, DistType distance);
 
 	void saveStation(AdjacencyList metro, LinkedList refTable);
+
+	void saveRoutes(AdjacencyList metro, LinkedList refTable);
 };
 

@@ -229,7 +229,8 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 				cout << "Invalid station name entered." << endl;
 		}
 		else if (x == "0") {
-			metro.saveStation(metro, refTable);
+			//metro.saveStation(metro, refTable);
+			metro.saveRoutes(metro, refTable);
 			run = false;
 		}
 		else {
