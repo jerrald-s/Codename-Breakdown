@@ -824,7 +824,6 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 		while (numOfStationCounted != numberOfStation) {
 			int k = 0;
 			for (k; k < metro.getSize(); k++) {
-				int hehe = metro.getSize();
 				bool added = false;
 				string writeLine = "";
 				// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
@@ -970,6 +969,9 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 												break;
 											}
 										}
+										else if (m + 1 != innerLinesList.getLength()){
+											continue;
+										}
 										else {
 											if (to_string(stationNum) == "0") {
 												writeStationLine = writeStationLine + line + ",";
@@ -982,6 +984,18 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 											added = true;
 											break;
 										}
+									}
+									if (added == false) {
+										if (to_string(stationNum) == "0") {
+											writeStationLine = writeStationLine + line + ",";
+										}
+										else {
+											writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+										}
+										frontNumber++;
+										numOfStationCounted++;
+										added = true;
+										break;
 									}
 								}
 							}
