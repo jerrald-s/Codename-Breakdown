@@ -223,14 +223,14 @@ int AdjacencyList::displayLine(LineType line)
 			if (tokens.get(j) == line)
 			{
 				//cout << stations[i]->name << endl;
-				if (tokens.getLength() == tokens2.getLength()) {
-					StaCodeType stationCode = stoi(tokens2.get(j));
-					displayTree.insert(stoi(tokens2.get(j)), tokens.get(j), stations[i]->name);
+				if (tokens2.get(j) == "") {
+					displayTree.insert(NULL, tokens.get(j), stations[i]->name);
 					numberOfLines++;
 				}
 				else
 				{
-					displayTree.insert(NULL, tokens.get(j), stations[i]->name);
+					StaCodeType stationCode = stoi(tokens2.get(j));
+					displayTree.insert(stoi(tokens2.get(j)), tokens.get(j), stations[i]->name);
 					numberOfLines++;
 				}
 			}
