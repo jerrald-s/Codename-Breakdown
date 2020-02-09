@@ -1,16 +1,17 @@
 #include "pch.h"
 #include "Queue.h"
 
-
+// Constructor
 Queue::Queue()
 {
 }
 
-
+// Destructor
 Queue::~Queue()
 {
 }
 
+// Adds item into the Queue
 bool Queue::enqueue(QueueItemType item)
 {
 	QueueNode *tempNode = new QueueNode;
@@ -29,6 +30,7 @@ bool Queue::enqueue(QueueItemType item)
 	return true;
 }
 
+// Removes item from the Queue
 bool Queue::dequeue()
 {
 	QueueNode *removedNode;
@@ -47,6 +49,7 @@ bool Queue::dequeue()
 	return true;
 }
 
+// Removes item from the queue and temporary store it in item
 bool Queue::dequeue(QueueItemType &item)
 {
 	QueueNode *removedNode;
@@ -67,6 +70,7 @@ bool Queue::dequeue(QueueItemType &item)
 	return true;
 }
 
+// gets the index of the frontNode
 void Queue::getFront(QueueItemType &item)
 {
 	if (!isEmpty())
@@ -75,6 +79,8 @@ void Queue::getFront(QueueItemType &item)
 	}
 }
 
+// returns true if the Queue is empty
+// else returns false
 bool Queue::isEmpty()
 {
 	if (frontNode == NULL)
@@ -84,6 +90,7 @@ bool Queue::isEmpty()
 	return false;
 }
 
+// Stores all the stationIndex in the list from the Queue
 List Queue::displayItems(List list)
 {
 	QueueNode *tempNode;
@@ -96,11 +103,13 @@ List Queue::displayItems(List list)
 	return list;
 }
 
+// returns the backNode stationIndex
 QueueItemType Queue::getBack()
 {
 	return backNode->stationIndex;
 }
 
+// returns the length of the Queue
 int Queue::getLength()
 {
 	int count = 0;
@@ -114,6 +123,7 @@ int Queue::getLength()
 	return count;
 }
 
+// returns the stationIndex of the node in a given index position
 QueueItemType Queue::get(int index)
 {
 	int count = 0;
@@ -127,6 +137,8 @@ QueueItemType Queue::get(int index)
 	return tempNode->stationIndex;
 }
 
+// duplicate the queue into another queue
+// and return the duplicated queue
 Queue Queue::clone(Queue original, Queue newQueue)
 {
 	for (int i = 0; i < original.getLength(); i++)

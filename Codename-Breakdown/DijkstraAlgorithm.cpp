@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "DijkstraAlgorithm.h"
 
-
+// Constructor
 DijkstraAlgorithm::DijkstraAlgorithm()
 {
 	size = 0;
 }
 
-
+// Destructor
 DijkstraAlgorithm::~DijkstraAlgorithm()
 {
 	DijkstraNode *tempNode;
@@ -16,9 +16,10 @@ DijkstraAlgorithm::~DijkstraAlgorithm()
 		tempNode = shortestRoute[i];
 		delete tempNode;
 	}
-	//delete shortestRoute;
 }
 
+// Adds a new station into the Dijkstra Algorithm
+// and returns the totalDistance
 int DijkstraAlgorithm::add(FullStationCodeType fullStationCode, WeightType totalDistance, PathType path, ShortestType isShortest)
 {
 	DijkstraNode *tempNode = new DijkstraNode;
@@ -31,16 +32,21 @@ int DijkstraAlgorithm::add(FullStationCodeType fullStationCode, WeightType total
 	return totalDistance;
 }
 
+// returns a pointer to the DijkstraNode given the index of the Node
 DijkstraAlgorithm::DijkstraNode* DijkstraAlgorithm::get(int index)
 {
 	return shortestRoute[index];
 }
 
+// returns the size of the Array
 int DijkstraAlgorithm::getLength()
 {
 	return size;
 }
 
+// Search for the next shortest totalDistance station in the Dijkstra Algorithm
+// that has not been selected yet
+// returns the index of the selected next shortest totalDistance station
 int DijkstraAlgorithm::getNextShortest()
 {
 	int nextShortest;
@@ -57,6 +63,8 @@ int DijkstraAlgorithm::getNextShortest()
 	return nextShortest;
 }
 
+// checks whether the station exist in the Dijkstra Algorithm
+// and returns the index if it exist, else returns -1
 int DijkstraAlgorithm::checkExist(FullStationCodeType fullStationCode)
 {
 	for (int i = 0; i < size; i++)
@@ -69,6 +77,9 @@ int DijkstraAlgorithm::checkExist(FullStationCodeType fullStationCode)
 	return -1;
 }
 
+// Updates the DijkstraNode with the new totalDistance and new path(Queue) given the index
+// of the node to be updated
+// Returns the new totalDistance
 int DijkstraAlgorithm::update(WeightType newDistance, PathType newPath, int index)
 {
 	shortestRoute[index]->totalDistance = newDistance;

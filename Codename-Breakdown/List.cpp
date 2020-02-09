@@ -57,6 +57,7 @@ string List::get(string n)
 	return s;
 }
 
+// Returns the content of the List given the index of the List
 string List::get(int index)
 {
 	bool success = (index >= 0) && (index < size);
@@ -66,6 +67,7 @@ string List::get(int index)
 		return "";
 }
 
+// Returns the size of the list
 int List::getLength()
 {
 	return size;
