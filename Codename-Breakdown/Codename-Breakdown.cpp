@@ -138,7 +138,7 @@ List getFare() {
 void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 	bool run = true;
 	while (run) {
-		cout << "---------------- Main Menu ------------------- \n [1] Display all stations in a given line \n [2] Display station information \n [3] Add and save new station on a given line \n [4] Display route information \n [0] Exit \n---------------------------------------------- \n Enter your option : ";
+		cout << "---------------- Main Menu ------------------- \n [1] Display all stations in a given line \n [2] Display station information \n [3] Add and save new station on a given line \n [4] Display route information \n [5] Save information \n [0] Exit \n---------------------------------------------- \n Enter your option : ";
 		string x;
 		cin >> x;
 		if (x == "1") {
@@ -238,9 +238,11 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 			else
 				cout << "Invalid station name entered." << endl;
 		}
-		else if (x == "0") {
-			//metro.saveStation(metro, refTable);
+		else if (x == "5") {
+			metro.saveStation(metro, refTable);
 			metro.saveRoutes(metro, refTable);
+		}
+		else if (x == "0") {
 			run = false;
 		}
 		else {
