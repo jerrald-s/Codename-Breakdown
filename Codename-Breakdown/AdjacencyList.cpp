@@ -852,7 +852,6 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 		while (numOfStationCounted != numberOfStation) {
 			int k = 0;
 			for (k; k < metro.getSize(); k++) {
-				int hehe = metro.getSize();
 				bool added = false;
 				string writeLine = "";
 				// Put HeaderNode line and StationCode into Vector(Array) in case it is an interchange
@@ -890,9 +889,23 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 						else {
 							HeaderNode *currentHeaderNode;
 							Node *currentNode;
+
 							currentHeaderNode = stations[k];
 							//for headernodes without nodes
-							if (currentHeaderNode->next == nullptr) {
+							if (numOfStationCounted == 0) {
+								if (to_string(stationNum) == "0") {
+									writeStationLine = writeStationLine + line + ",";
+								}
+								else {
+									writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+								}
+								frontNumber++;
+								numOfStationCounted++;
+								added = true;
+								break;
+							}
+							//for headerNodes without nodes in them
+							else if (currentHeaderNode->next == nullptr) {
 								if (to_string(stationNum) == "0") {
 									writeStationLine = writeStationLine + line + ",";
 								}
@@ -938,7 +951,7 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 										innerCodesList.add(innerCodeString);
 									}
 									for (int m = 0; m < innerLinesList.getLength(); m++) {
-										if (innerLinesList.get(l) == line) {
+										if (innerLinesList.get(m) == line) {
 											int innerCodeInt;
 											stringstream ssInnerCode(innerCodesList.get(m));
 											ssInnerCode >> innerCodeInt;
@@ -998,6 +1011,9 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 												break;
 											}
 										}
+										else if (m + 1 != innerLinesList.getLength()){
+											continue;
+										}
 										else {
 											if (to_string(stationNum) == "0") {
 												writeStationLine = writeStationLine + line + ",";
@@ -1010,6 +1026,19 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 											added = true;
 											break;
 										}
+									}
+									if (added == false) {
+										if (to_string(stationNum) == "0") {
+											writeStationLine = writeStationLine + line + ",";
+										}
+										else {
+											writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+										}
+										writeRouteLine = writeRouteLine + to_string(currentNode->distance) + ",";
+										frontNumber++;
+										numOfStationCounted++;
+										added = true;
+										break;
 									}
 								}
 							}
