@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-typedef int StaCodeType;
+typedef string StaCodeType;
 typedef string LineType;
 typedef string NameType;
 

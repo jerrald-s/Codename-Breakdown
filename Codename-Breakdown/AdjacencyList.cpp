@@ -242,8 +242,8 @@ int AdjacencyList::displayLine(LineType line)
 				}
 				else
 				{
-					StaCodeType stationCode = stoi(tokens2.get(j));
-					displayTree.insert(stoi(tokens2.get(j)), tokens.get(j), stations[i]->name);
+					StaCodeType stationCode = tokens2.get(j);
+					displayTree.insert(tokens2.get(j), tokens.get(j), stations[i]->name);
 					numberOfLines++;
 				}
 			}
@@ -518,7 +518,7 @@ List AdjacencyList::getAllStationNumber(LineType line) {
 			{
 				//cout << stations[i]->name << endl;
 				if (tokens2.get(j) != "") {
-					StaCodeType stationCode = stoi(tokens2.get(j));
+					StaCodeType stationCode = tokens2.get(j);
 					numberList.add(tokens2.get(j));
 				}
 				//specially for full station codes without number
@@ -560,7 +560,7 @@ int AdjacencyList::displayNumberOfStation(LineType line)
 			{
 				//cout << stations[i]->name << endl;
 				if (tokens.getLength() == tokens2.getLength()) {
-					StaCodeType stationCode = stoi(tokens2.get(j));
+					StaCodeType stationCode = tokens2.get(j);
 					numberOfLines++;
 				}
 				else

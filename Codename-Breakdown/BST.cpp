@@ -70,7 +70,7 @@ void BST::inorder(BinaryNode* t)
 	if (t != NULL)
 	{
 		inorder(t->left);
-		if (t->item != NULL)
+		if (t->item != "")
 			cout << t->line << t->item << " " << t->name << endl;
 		else
 			cout << t->line << " " << t->name << endl;
