@@ -889,9 +889,23 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 						else {
 							HeaderNode *currentHeaderNode;
 							Node *currentNode;
+
 							currentHeaderNode = stations[k];
 							//for headernodes without nodes
-							if (currentHeaderNode->next == nullptr) {
+							if (numOfStationCounted == 0) {
+								if (to_string(stationNum) == "0") {
+									writeStationLine = writeStationLine + line + ",";
+								}
+								else {
+									writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
+								}
+								frontNumber++;
+								numOfStationCounted++;
+								added = true;
+								break;
+							}
+							//for headerNodes without nodes in them
+							else if (currentHeaderNode->next == nullptr) {
 								if (to_string(stationNum) == "0") {
 									writeStationLine = writeStationLine + line + ",";
 								}
@@ -937,7 +951,7 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 										innerCodesList.add(innerCodeString);
 									}
 									for (int m = 0; m < innerLinesList.getLength(); m++) {
-										if (innerLinesList.get(l) == line) {
+										if (innerLinesList.get(m) == line) {
 											int innerCodeInt;
 											stringstream ssInnerCode(innerCodesList.get(m));
 											ssInnerCode >> innerCodeInt;
@@ -1020,6 +1034,7 @@ void AdjacencyList::saveRoutes(AdjacencyList metro, LinkedList refTable) {
 										else {
 											writeStationLine = writeStationLine + line + to_string(stationNum) + ",";
 										}
+										writeRouteLine = writeRouteLine + to_string(currentNode->distance) + ",";
 										frontNumber++;
 										numOfStationCounted++;
 										added = true;

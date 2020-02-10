@@ -239,7 +239,7 @@ void menu(AdjacencyList metro, List fare, LinkedList refTable) {
 				cout << "Invalid station name entered." << endl;
 		}
 		else if (x == "5") {
-			metro.saveStation(metro, refTable);
+			//metro.saveStation(metro, refTable);
 			metro.saveRoutes(metro, refTable);
 		}
 		else if (x == "0") {
